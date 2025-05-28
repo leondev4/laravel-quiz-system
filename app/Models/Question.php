@@ -12,7 +12,7 @@ class Question extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'question_text',
+        'text',
         'code_snippet',
         'answer_explanation',
         'more_info_link',
@@ -26,5 +26,9 @@ class Question extends Model
     public function quizzes()
     {
         return $this->belongsToMany(Quiz::class);
+    }
+    public function answers(): HasMany
+    {
+        return $this->hasMany(Answer::class);
     }
 }
