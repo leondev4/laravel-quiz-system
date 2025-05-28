@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Quiz;
+namespace App\Livewire\Quiz;
 
 use App\Models\Quiz;
 use Illuminate\Contracts\View\View;

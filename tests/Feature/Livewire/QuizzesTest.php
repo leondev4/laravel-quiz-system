@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Livewire;
 
-use App\Http\Livewire\Quiz\QuizForm;
+use App\Livewire\Quiz\QuizForm;
 use App\Models\Quiz;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

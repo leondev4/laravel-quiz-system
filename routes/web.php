@@ -3,15 +3,15 @@
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ResultController;
-use App\Http\Livewire\Admin\AdminForm;
-use App\Http\Livewire\Admin\AdminList;
-use App\Http\Livewire\Admin\Tests\TestList;
-use App\Http\Livewire\Front\Leaderboard;
-use App\Http\Livewire\Front\Results\ResultList;
-use App\Http\Livewire\Question\QuestionForm;
-use App\Http\Livewire\Question\QuestionList;
-use App\Http\Livewire\Quiz\QuizForm;
-use App\Http\Livewire\Quiz\QuizList;
+use App\Livewire\Admin\AdminForm;
+use App\Livewire\Admin\AdminList;
+use App\Livewire\Admin\Tests\TestList;
+use App\Livewire\Front\Leaderboard;
+use App\Livewire\Front\Results\ResultList;
+use App\Livewire\Question\QuestionForm;
+use App\Livewire\Question\QuestionList;
+use App\Livewire\Quiz\QuizForm;
+use App\Livewire\Quiz\QuizList;
 use Illuminate\Support\Facades\Route;
 
 /*

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Front\Results;
+namespace App\Livewire\Front\Results;
 
 use App\Models\Test;
 use Livewire\Component;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Question;
+namespace App\Livewire\Question;
 
 use App\Models\Question;
 use Illuminate\Contracts\View\View;

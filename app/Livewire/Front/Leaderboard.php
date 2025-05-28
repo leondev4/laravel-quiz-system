@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Front;
+namespace App\Livewire\Front;
 
 use App\Models\Quiz;
 use App\Models\Test;

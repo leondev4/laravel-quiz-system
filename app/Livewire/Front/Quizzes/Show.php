@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Livewire\Front\Quizzes;
+namespace App\Livewire\Front\Quizzes;
 
 use App\Models\Question;
 use App\Models\Option;

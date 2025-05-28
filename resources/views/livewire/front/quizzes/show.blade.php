@@ -20,7 +20,7 @@
         <div>
             <label for="option.{{ $option->id }}">
                 <input type="radio" id="option.{{ $option->id }}"
-                    wire:model.defer="answersOfQuestions.{{ $currentQuestionIndex }}"
+                    wire:model="answersOfQuestions.{{ $currentQuestionIndex }}"
                     name="answersOfQuestions.{{ $currentQuestionIndex }}" value="{{ $option->id }}">
                 {{ $option->text }}
             </label>
