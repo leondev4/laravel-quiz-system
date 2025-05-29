@@ -60,7 +60,7 @@
                                         {{ $test->user->name ?? 'Guest' }}
                                     </td>
                                     <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                        {{ $test->quiz->title }}
+                                        {{ $test->quiz?->title }}
                                     </td>
                                     <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                         {{ $test->result . '/' . $test->questions_count }}
