@@ -16,6 +16,22 @@ class QuizList extends Component
         Quiz::find($quiz_id)->delete();
     }
 
+    public function togglePublished($quizId)
+    {
+        $quiz = Quiz::findOrFail($quizId);
+        $quiz->update(['published' => !$quiz->published]);
+        
+        session()->flash('message', 'Quiz ' . ($quiz->published ? 'published' : 'unpublished') . ' successfully.');
+    }
+
+    public function togglePublic($quizId)
+    {
+        $quiz = Quiz::findOrFail($quizId);
+        $quiz->update(['public' => !$quiz->public]);
+        
+        session()->flash('message', 'Quiz visibility changed successfully.');
+    }
+
     public function render(): View
     {
         $quizzes = Quiz::withCount('questions')->latest()->paginate();
