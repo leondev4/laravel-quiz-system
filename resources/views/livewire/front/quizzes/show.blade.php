@@ -16,16 +16,39 @@
         <pre class="mb-4 border-2 border-solid bg-gray-50 p-2">{{ $currentQuestion->code_snippet }}</pre>
     @endif
 
-    @foreach ($currentQuestion->options as $option)
-        <div>
-            <label for="option.{{ $option->id }}">
-                <input type="radio" id="option.{{ $option->id }}"
-                    wire:model="answersOfQuestions.{{ $currentQuestionIndex }}"
-                    name="answersOfQuestions.{{ $currentQuestionIndex }}" value="{{ $option->id }}">
-                {{ $option->text }}
-            </label>
-        </div>
-    @endforeach
+    @php
+        $correctAnswersCount = $currentQuestion->options->where('correct', true)->count();
+        $isMultipleChoice = $correctAnswersCount > 1;
+    @endphp
+
+    <div class="mb-4">
+        @if ($isMultipleChoice)
+            <p class="text-sm text-gray-600 mb-2">Select all correct answers:</p>
+        @else
+            <p class="text-sm text-gray-600 mb-2">Select the correct answer:</p>
+        @endif
+        
+        @foreach ($currentQuestion->options as $option)
+            <div class="mb-2">
+                <label for="option.{{ $option->id }}" class="flex items-center cursor-pointer">
+                    @if ($isMultipleChoice)
+                        <input type="checkbox" 
+                               id="option.{{ $option->id }}"
+                               wire:model="answersOfQuestions.{{ $currentQuestionIndex }}"
+                               value="{{ $option->id }}"
+                               class="mr-2">
+                    @else
+                        <input type="radio" 
+                               id="option.{{ $option->id }}"
+                               wire:model="answersOfQuestions.{{ $currentQuestionIndex }}"
+                               value="{{ $option->id }}"
+                               class="mr-2">
+                    @endif
+                    <span>{{ $option->text }}</span>
+                </label>
+            </div>
+        @endforeach
+    </div>
 
     @if ($currentQuestionIndex < $this->questionsCount - 1)
         <div class="mt-4">
