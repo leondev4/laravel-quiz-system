@@ -10,7 +10,8 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <!-- Quiz Details Form -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <form wire:submit="save">
@@ -36,12 +37,6 @@
                         </div>
 
                         <div class="mt-4">
-                            <x-input-label for="questions" value="Questions" />
-                            <x-select-list class="w-full" id="questions" name="questions" :options="$this->questionsList"
-                                wire:model.live="questions" multiple />
-                            <x-input-error :messages="$errors->get('questions')" class="mt-2" />
-                        </div>
-                        <div class="mt-4">
                             <div class="flex items-center">
                                 <x-input-label for="published" value="Published" />
                                 <input type="checkbox" id="published" class="mr-1 ml-2" wire:model.live="published">
@@ -59,12 +54,16 @@
 
                         <div class="mt-4">
                             <x-primary-button>
-                                Save
+                                Save Quiz Details
                             </x-primary-button>
                         </div>
                     </form>
                 </div>
             </div>
+
+            @if($editing && $quiz->exists)
+                <livewire:quiz.question-manager :quiz="$quiz" wire:key="question-manager-{{ $quiz->id }}" />
+            @endif
         </div>
     </div>
 </div>
