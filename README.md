@@ -96,3 +96,20 @@ To run tests, run the following command
 ## Contributing
 
 Contributions are always welcome!
+
+## docker temporal image
+
+### ejecutar bash desde container
+```
+docker exec -it 713 bash
+```
+
+### realizar log del container
+```
+docker container logs 713
+```
+
+### sh: 1: vite: Permission denied (desde host)
+```
+sudo chmod +x node_modules/.bin/vite
+```

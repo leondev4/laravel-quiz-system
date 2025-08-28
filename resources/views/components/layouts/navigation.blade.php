@@ -56,8 +56,8 @@
                         </x-slot>
                     </x-dropdown>
                 @else
-                    <x-nav-link :href="route('login')">Log In</x-nav-link>
-                    <x-nav-link :href="route('register')">Register</x-nav-link>
+                    <x-nav-link :href="route('login')">Inciar sesión</x-nav-link>
+                    <x-nav-link :href="route('register')">Registrarse</x-nav-link>
                 @endauth
                 @admin
                     |
@@ -65,7 +65,7 @@
                         <x-slot name="trigger">
                             <button
                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                                <div>Manage</div>
+                                <div>Administrar</div>
 
                                 <div class="ml-1">
                                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
@@ -80,16 +80,16 @@
 
                         <x-slot name="content">
                             <x-dropdown-link :href="route('admins')">
-                                Admins
-                            </x-dropdown-link>
-                            <x-dropdown-link :href="route('questions')">
-                                Questions
-                            </x-dropdown-link>
-                            <x-dropdown-link :href="route('quizzes')">
-                                Quizzes
+                                Administradores
                             </x-dropdown-link>
                             <x-dropdown-link :href="route('tests')">
-                                Tests
+                                Quizzes                                
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('questions')">
+                                Preguntas
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('quizzes')">
+                                Exámenes
                             </x-dropdown-link>
                         </x-slot>
 
@@ -121,7 +121,7 @@
                 <x-slot name="trigger">
                     <button
                         class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                        <div>Manage</div>
+                        <div>Administrar</div>
 
                         <div class="ml-1">
                             <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
@@ -134,14 +134,14 @@
                 </x-slot>
 
                 <x-slot name="content">
-                    <x-dropdown-link :href="route('questions')">
-                        Questions
-                    </x-dropdown-link>
-                    <x-dropdown-link :href="route('quizzes')">
+                    <x-dropdown-link :href="route('tests')">
                         Quizzes
                     </x-dropdown-link>
-                    <x-dropdown-link :href="route('tests')">
-                        Tests
+                    <x-dropdown-link :href="route('questions')">
+                        Preguntas
+                    </x-dropdown-link>
+                    <x-dropdown-link :href="route('quizzes')">
+                        Exámenes
                     </x-dropdown-link>
                 </x-slot>
 

@@ -1,12 +1,12 @@
 <div>
     <x-slot name="header">
         <h2 class="text-xl font-semibold leading-tight text-gray-800">
-            Admins
+            Administradores
         </h2>
     </x-slot>
 
     <x-slot name="title">
-        Admins
+        Administradores
     </x-slot>
 
     <div class="py-12">
@@ -16,7 +16,7 @@
                     <div class="mb-4">
                         <a href="{{ route('admin.create') }}"
                             class="inline-flex items-center rounded-md border border-transparent bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-gray-700">
-                            Create Admin
+                            Crear Administrador
                         </a>
                     </div>
 
@@ -30,7 +30,7 @@
                                     </th>
                                     <th class="bg-gray-50 px-6 py-3 text-left">
                                         <span
-                                            class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Name</span>
+                                            class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Nombre</span>
                                     </th>
                                     <th class="bg-gray-50 px-6 py-3 text-left">
                                         <span
@@ -62,7 +62,7 @@
                                     <tr>
                                         <td colspan="8"
                                             class="px-6 py-4 text-center leading-5 text-gray-900 whitespace-no-wrap">
-                                            No admins were found.
+                                            No hay administradores registrados.
                                         </td>
                                     </tr>
                                 @endforelse

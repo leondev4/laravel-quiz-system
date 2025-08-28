@@ -3,7 +3,7 @@
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h6 class="text-xl font-bold">Test Results</h6>
+                    <h6 class="text-xl font-bold">Resultados del quizz</h6>
 
                     <table class="mt-4 table w-full table-view">
                         <tbody class="bg-white">
@@ -11,7 +11,7 @@
                                 <tr class="w-28">
                                     <th
                                         class="border border-solid bg-gray-100 px-6 py-3 text-left text-sm font-semibold uppercase text-slate-600">
-                                        User</th>
+                                        USUARIO</th>
                                     <td class="border border-solid px-6 py-3">{{ $test->user->name ?? '' }}
                                         ({{ $test->user->email ?? '' }})</td>
                                 </tr>
@@ -19,14 +19,14 @@
                             <tr class="w-28">
                                 <th
                                     class="border border-solid bg-gray-100 px-6 py-3 text-left text-sm font-semibold uppercase text-slate-600">
-                                    Date</th>
+                                    FECHA</th>
                                 <td class="border border-solid px-6 py-3">
                                     {{ $test->created_at->format('D m/Y, h:m A') ?? '' }}</td>
                             </tr>
                             <tr class="w-28">
                                 <th
                                     class="border border-solid bg-gray-100 px-6 py-3 text-left text-sm font-semibold uppercase text-slate-600">
-                                    Result</th>
+                                    RESULTADO</th>
                                 <td class="border border-solid px-6 py-3">
                                     {{ $test->result }} / {{ $questions_count }}
                                     @if ($test->time_spent)
@@ -50,8 +50,8 @@
                         <table class="table mt-4 w-full table-view">
                             <thead>
                                 <th class="text-left">Rank</th>
-                                <th class="text-left">Username</th>
-                                <th class="text-left">Results</th>
+                                <th class="text-left">Usuario</th>
+                                <th class="text-left">Resultado</th>
                             </thead>
                             <tbody class="bg-white">
                                 @foreach ($leaderboard as $test)
@@ -79,11 +79,11 @@
                         <table class="table table-view w-full my-4 bg-white">
                             <tbody class="bg-white">
                                 <tr class="bg-gray-100">
-                                    <td class="w-1/2">Question #{{ $loop->iteration }}</td>
+                                    <td class="w-1/2">Pregunta #{{ $loop->iteration }}</td>
                                     <td>{!! nl2br($result->question->text) !!}</td>
                                 </tr>
                                 <tr>
-                                    <td>Options</td>
+                                    <td>Respuestas</td>
                                     <td>
                                         @foreach ($result->question->options as $option)
                                             <li @class([

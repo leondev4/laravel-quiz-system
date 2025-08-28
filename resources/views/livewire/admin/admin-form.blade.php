@@ -1,12 +1,12 @@
 <div>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ 'Create Admin' }}
+            {{ 'Crear Administrador' }}
         </h2>
     </x-slot>
 
     <x-slot name="title">
-        {{ 'Create Admin' }}
+        {{ 'Crear Administrador' }}
     </x-slot>
 
     <div class="py-12">
@@ -15,14 +15,14 @@
                 <div class="p-6 text-gray-900">
                     <form wire:submit="save">
                         <div>
-                            <x-input-label for="name" value="Name" />
+                            <x-input-label for="name" value="Nombre" />
                             <x-text-input wire:model="name" id="name" class="block mt-1 w-full"
                                 type="text" name="name" required />
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />
                         </div>
 
                         <div class="mt-4">
-                            <x-input-label for="email" value="Email Address" />
+                            <x-input-label for="email" value="Dirección Email" />
                             <x-text-input wire:model="email" id="email" class="block mt-1 w-full"
                                 type="email" name="email" required />
                             <x-input-error :messages="$errors->get('email')" class="mt-2" />
@@ -37,7 +37,7 @@
 
                         <div class="mt-4">
                             <x-primary-button>
-                                Save
+                                guardar
                             </x-primary-button>
                         </div>
                     </form>

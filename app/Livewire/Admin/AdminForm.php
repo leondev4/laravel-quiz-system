@@ -30,7 +30,7 @@ class AdminForm extends Component
             'is_admin' => 1
         ]);
 
-        session()->flash('message', 'Saved.');
+        session()->flash('message', 'Guardado.');
         return to_route('admins');
     }
 

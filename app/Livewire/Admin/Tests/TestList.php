@@ -33,7 +33,7 @@ class TestList extends Component
         
         $test->delete();
         
-        session()->flash('message', 'Test deleted successfully.');
+        session()->flash('message', 'Quiz elminado satisfactoriamente.');
         
         // Reset pagination if needed
         $this->resetPage();
@@ -53,7 +53,7 @@ class TestList extends Component
         $deletedCount = $query->count();
         $query->delete();
         
-        session()->flash('message', "Deleted {$deletedCount} tests older than {$days} days.");
+        session()->flash('message', "Eliminados {$deletedCount} quizzes mayores {$days} días.");
         
         // Reset pagination
         $this->resetPage();
