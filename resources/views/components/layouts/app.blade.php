@@ -20,6 +20,9 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+    <style>
+        .frac-line {border-color: #000}
+    </style>
 </head>
 
 <body class="font-sans antialiased">
@@ -42,6 +45,45 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css"
+    integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js"
+    integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ"
+    crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js"
+    integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI"
+    crossorigin="anonymous"></script>
+    <script>
+         let opts = {
+            // customised options
+            // • auto-render specific keys, e.g.:
+            delimiters: [{
+                    left: "$$",
+                    right: "$$",
+                    display: true
+                }, // Display mode
+                {
+                    left: "\\[",
+                    right: "\\]",
+                    display: true
+                }, // Display mode
+                {
+                    left: "$",
+                    right: "$",
+                    display: false
+                }, // Inline mode
+                {
+                    left: "\\(",
+                    right: "\\)",
+                    display: false
+                } // Inline mode
+            ]
+        };
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, opts);
+        });
+    </script>
     @livewireScripts
     @stack('scripts')
 </body>

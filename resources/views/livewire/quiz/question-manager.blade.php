@@ -108,7 +108,7 @@
                     </div>
 
                     <!-- Questions List -->
-                    <div class="max-h-96 overflow-y-auto border rounded-lg">
+                    <div class="max-h-96 overflow-y-auto border rounded-lg" id="padreSeleccionarPreguntas">
                         @if($this->availableQuestions->isEmpty())
                             <div class="text-gray-500 text-center py-8">
                                 No questions found matching your criteria.
@@ -177,3 +177,18 @@
         </div>
     @endif
 </div>
+{{-- Agrega esto en tu layout principal o antes de tu script --}}
+@push('scripts')
+{{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script> --}}
+
+<script>
+ document.addEventListener("DOMContentLoaded", function() {
+        const padre = document.getElementById("padreSeleccionarPreguntas");
+        if (padre && typeof renderMathInElement === 'function') {
+            renderMathInElement(padre, opts);
+        }
+    });
+</script>
+@endpush

@@ -16,10 +16,35 @@
                     <form wire:submit="save">
                         <div>
                             <x-input-label for="text" value="Question text" />
-                            <x-textarea wire:model="text" id="text" class="block mt-1 w-full"
-                                type="text" name="text" required />
+                            <x-textarea wire:model="text" id="text" class="block mt-1 w-full" type="text"
+                                name="text" required />
                             <x-input-error :messages="$errors->get('text')" class="mt-2" />
                         </div>
+                        {{-- ...existing code... --}}
+                        <div class="mb-4">
+                            <label for="duration" class="block text-sm font-medium text-gray-700">Duración</label>
+                            <select name="duration" id="duration" wire:model="duration"
+                                class="p-3 w-1/2 text-sm leading-5 rounded border-0 shadow text-slate-600" required>
+                                <option value="0" disabled>Seleccione una duracion</option>
+                                <option value="30">30 segundos</option>
+                                <option value="60">1 minuto</option>
+                                <option value="90">1:30 minutos</option>
+                                <option value="120">2 minutos</option>
+                                <option value="150">2:30 minutos</option>
+                                <option value="180">3 minutos</option>
+                                <option value="240">4 minutos</option>
+                                <option value="300">5 minutos</option>
+                            </select>
+                            @error('duration')
+                                <span class="text-red-500 text-xs">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        {{-- <select class="p-3 w-1/2 text-sm leading-5 rounded border-0 shadow text-slate-600"
+                            wire:model.live="quiz_id">
+                            <option value="0">Todos los quizzes</option>
+                        </select> --}}
+                        {{-- ...existing code... --}}
 
                         <div class="mt-4">
                             <x-input-label for="options" value="Question options" />
@@ -46,12 +71,14 @@
                             <x-primary-button wire:click="addOption" type="button" class="mt-2">
                                 Add
                             </x-primary-button>
+
+
                         </div>
 
                         <div class="mt-4">
                             <x-input-label for="code_snippet" value="Code snippet" />
-                            <x-textarea wire:model="code_snippet" id="code_snippet"
-                                class="block mt-1 w-full" type="text" name="code_snippet" />
+                            <x-textarea wire:model="code_snippet" id="code_snippet" class="block mt-1 w-full"
+                                type="text" name="code_snippet" />
                             <x-input-error :messages="$errors->get('code_snippet')" class="mt-2" />
                         </div>
 
@@ -64,19 +91,69 @@
 
                         <div class="mt-4">
                             <x-input-label for="more_info_link" value="More info link" />
-                            <x-text-input wire:model="more_info_link" id="more_info_link"
-                                class="block mt-1 w-full" type="text" name="more_info_link" />
+                            <x-text-input wire:model="more_info_link" id="more_info_link" class="block mt-1 w-full"
+                                type="text" name="more_info_link" />
                             <x-input-error :messages="$errors->get('more_info_link')" class="mt-2" />
                         </div>
 
                         <div class="mt-4">
+                            <button type="button" onclick="mostrar()"
+                                class="rounded-md border border-transparent bg-blue-200 px-4 py-2 text-xs uppercase text-blue-700 hover:bg-blue-300 hover:text-blue-900">
+                                Mostrar
+                            </button>
+
                             <x-primary-button>
                                 Save
                             </x-primary-button>
                         </div>
+
+
                     </form>
+                </div>
+
+                <div>
+                    <h1 id="pregunta">
+                    </h1>
+
+                    <div id="opciones">
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@push('scripts')
+    <script>
+       
+        const pregunta = 'pregunta';
+        const opciones = 'opciones';
+        const formula = 'text';
+
+        function agregarPregunta() {
+            let contenedorTexto = document.getElementById(formula);
+            let preguntaContenedor = document.getElementById(pregunta);
+
+            preguntaText = contenedorTexto.value;
+            preguntaContenedor.innerHTML = preguntaText;
+
+            let opcionesLara = @this.options;
+            let opcionesContenedor = document.getElementById(opciones);
+
+            opcionesLara.forEach(element => {
+                contenedorTexto = document.getElementById(element.text);
+
+                const h2 = document.createElement("h2");
+                h2.textContent = element.text;
+                const div = document.createElement("div");
+                div.appendChild(h2);
+                opcionesContenedor.appendChild(div);
+            });
+            renderMathInElement(opcionesContenedor, opts);
+            renderMathInElement(preguntaContenedor, opts);
+        }
+
+        function mostrar() {
+            agregarPregunta();
+        }
+    </script>
+@endpush

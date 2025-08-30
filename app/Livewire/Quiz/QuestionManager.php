@@ -55,7 +55,8 @@ class QuestionManager extends Component
     #[Computed]
     public function availableQuestions()
     {
-        $query = Question::query()
+        $query = Question::query()->
+            where('user_id',auth()->id())
             ->with(['options' => function ($query) {
                 $query->orderBy('created_at', 'desc');
             }])

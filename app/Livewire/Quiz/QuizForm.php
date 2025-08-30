@@ -78,6 +78,9 @@ class QuizForm extends Component
         $this->quiz->description = $this->description;
         $this->quiz->published = $this->published;
         $this->quiz->public = $this->public;
+        
+        // Guardar el id del usuario actual
+        $this->quiz->user_id = auth()->id();
 
         $this->quiz->save();
 

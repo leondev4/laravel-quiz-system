@@ -11,7 +11,7 @@
                 <div class="p-6 text-gray-900">
                     <select class="p-3 w-full text-sm leading-5 rounded border-0 shadow text-slate-600"
                         wire:model.live="quiz_id">
-                        <option value="0">All quizzes</option>
+                        <option value="0">Todos los quizzes</option>
                         @foreach ($quizzes as $quiz)
                             <option value="{{ $quiz->id }}">{{ $quiz->title }}</option>
                         @endforeach
@@ -22,7 +22,7 @@
                                 <th class="bg-gray-50 px-6 py-3 text-left w-9"></th>
                                 <th class="bg-gray-50 px-6 py-3 text-left w-1/2">
                                     <span
-                                        class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Username</span>
+                                        class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Nombre</span>
                                 </th>
                                 <th class="bg-gray-50 px-6 py-3 text-left">
                                     <span
@@ -30,8 +30,7 @@
                                 </th>
                                 <th class="bg-gray-50 px-6 py-3 text-left">
                                     <span
-                                        class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Correct
-                                        answers</span>
+                                        class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Aciertos</span>
                                 </th>
                             </tr>
                         </thead>
@@ -54,12 +53,12 @@
                                         {{ $test->quiz->questions_count }}
                                         (time:
                                         {{ sprintf('%.2f', $test->time_spent / 60) }}
-                                        minutes)
+                                        minutos)
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3">No results.</td>
+                                    <td colspan="3">Sin resultados.</td>
                                 </tr>
                             @endforelse
                             {{-- @forelse ($users as $user)

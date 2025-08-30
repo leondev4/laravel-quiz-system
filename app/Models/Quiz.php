@@ -42,4 +42,7 @@ class Quiz extends Model
     {
         return $q->where('published', true);
     }
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }
