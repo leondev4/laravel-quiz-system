@@ -14,12 +14,12 @@
                     No questions added to this quiz yet.
                 </div>
             @else
-                <div class="space-y-3">
+                <div class="space-y-3" id="quiz-questions-container">
                     @foreach($this->currentQuestions as $question)
                         <div class="border rounded-lg p-4 hover:bg-gray-50">
                             <div class="flex justify-between items-start">
                                 <div class="flex-1">
-                                    <p class="font-medium text-gray-900">{{ $question->text }}</p>
+                                    <p class="font-medium text-gray-900">{!! $question->text !!}</p>
                                     <div class="mt-2 text-sm text-gray-600">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                                             {{ $question->options->where('correct', true)->count() }} correct answer(s)
@@ -162,6 +162,7 @@
                 </div>
             </div>
         </div>
+
     @endif
 
     <!-- Flash Messages -->
@@ -177,18 +178,11 @@
         </div>
     @endif
 </div>
-{{-- Agrega esto en tu layout principal o antes de tu script --}}
-@push('scripts')
-{{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script> --}}
 
+       @push('scripts')
 <script>
- document.addEventListener("DOMContentLoaded", function() {
-        const padre = document.getElementById("padreSeleccionarPreguntas");
-        if (padre && typeof renderMathInElement === 'function') {
-            renderMathInElement(padre, opts);
-        }
+    window.addEventListener('questions-updated', function() {
+        window.location.reload();
     });
 </script>
 @endpush
