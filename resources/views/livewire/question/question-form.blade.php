@@ -97,63 +97,203 @@
                         </div>
 
                         <div class="mt-4">
-                            <button type="button" onclick="mostrar()"
+                            <button type="button" onclick="mostrarPreview()"
                                 class="rounded-md border border-transparent bg-blue-200 px-4 py-2 text-xs uppercase text-blue-700 hover:bg-blue-300 hover:text-blue-900">
-                                Mostrar
+                                Vista Previa
                             </button>
 
                             <x-primary-button>
-                                Save
+                                Guardar
                             </x-primary-button>
                         </div>
-
-
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <div>
-                    <h1 id="pregunta">
-                    </h1>
+    <!-- Modal de Vista Previa -->
+    <div id="previewModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <!-- Modal Header -->
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold">Vista Previa de la Pregunta</h3>
+                    <button onclick="cerrarPreview()" class="text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
 
-                    <div id="opciones">
+                <!-- Contenido del Modal -->
+                <div class="bg-gray-50 p-6 rounded-lg">
+                    <div class="mb-4">
+                        <span class="text-bold">Pregunta:</span>
+                        <h2 class="mb-4 text-xl katex-content" id="preguntaPreview"></h2>
                     </div>
+
+                    <div id="codigoPreview" class="mb-4 hidden">
+                        <span class="text-bold">Código:</span>
+                        <pre class="mb-4 border-2 border-solid bg-white p-2" id="codigoContent"></pre>
+                    </div>
+
+                    <div class="mb-4">
+                        <span class="text-bold">Opciones:</span>
+                        <div id="opcionesPreview" class="mt-2 space-y-2"></div>
+                    </div>
+
+                    <div id="explicacionPreview" class="mb-4 hidden">
+                        <span class="text-bold">Explicación:</span>
+                        <div class="mt-1 text-sm text-gray-700 katex-content" id="explicacionContent"></div>
+                    </div>
+
+                    <div id="enlacePreview" class="mb-4 hidden">
+                        <span class="text-bold">Más información:</span>
+                        <a href="#" target="_blank" class="ml-2 text-blue-600 hover:underline" id="enlaceContent"></a>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="flex justify-end mt-6 pt-4 border-t">
+                    <button onclick="cerrarPreview()" 
+                            class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400">
+                        Cerrar
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 @push('scripts')
-    <script>
-       
-        const pregunta = 'pregunta';
-        const opciones = 'opciones';
-        const formula = 'text';
+<script>
+    // Configuración de KaTeX
+    const katexOpts = {
+        delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "\\[", right: "\\]", display: true},
+            {left: "$", right: "$", display: false},
+            {left: "\\(", right: "\\)", display: false}
+        ],
+        throwOnError: false,
+        errorColor: '#cc0000',
+        strict: false
+    };
 
-        function agregarPregunta() {
-            let contenedorTexto = document.getElementById(formula);
-            let preguntaContenedor = document.getElementById(pregunta);
+    function mostrarPreview() {
+        // Obtener datos de Livewire
+        const preguntaTexto = @this.text || '';
+        const opciones = @this.options || [];
+        const codigoSnippet = @this.code_snippet || '';
+        const explicacion = @this.answer_explanation || '';
+        const enlaceInfo = @this.more_info_link || '';
 
-            preguntaText = contenedorTexto.value;
-            preguntaContenedor.innerHTML = preguntaText;
+        // Mostrar pregunta
+        const preguntaPreview = document.getElementById('preguntaPreview');
+        preguntaPreview.innerHTML = preguntaTexto;
 
-            let opcionesLara = @this.options;
-            let opcionesContenedor = document.getElementById(opciones);
-
-            opcionesLara.forEach(element => {
-                contenedorTexto = document.getElementById(element.text);
-
-                const h2 = document.createElement("h2");
-                h2.textContent = element.text;
-                const div = document.createElement("div");
-                div.appendChild(h2);
-                opcionesContenedor.appendChild(div);
-            });
-            renderMathInElement(opcionesContenedor, opts);
-            renderMathInElement(preguntaContenedor, opts);
+        // Mostrar código si existe
+        const codigoPreview = document.getElementById('codigoPreview');
+        const codigoContent = document.getElementById('codigoContent');
+        if (codigoSnippet.trim()) {
+            codigoContent.textContent = codigoSnippet;
+            codigoPreview.classList.remove('hidden');
+        } else {
+            codigoPreview.classList.add('hidden');
         }
 
-        function mostrar() {
-            agregarPregunta();
+        // Mostrar opciones
+        const opcionesPreview = document.getElementById('opcionesPreview');
+        opcionesPreview.innerHTML = '';
+        
+        opciones.forEach((opcion, index) => {
+            if (opcion.text && opcion.text.trim()) {
+                const div = document.createElement('div');
+                div.className = 'flex items-center space-x-2';
+                
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = 'preview_options';
+                input.className = 'mr-2';
+                input.disabled = true;
+                
+                const span = document.createElement('span');
+                span.className = 'katex-content';
+                span.innerHTML = opcion.text;
+                
+                if (opcion.correct) {
+                    span.className += ' font-bold text-green-700';
+                    const correctLabel = document.createElement('span');
+                    correctLabel.className = 'text-xs text-green-600 ml-2';
+                    correctLabel.textContent = '(Correcta)';
+                    div.appendChild(input);
+                    div.appendChild(span);
+                    div.appendChild(correctLabel);
+                } else {
+                    div.appendChild(input);
+                    div.appendChild(span);
+                }
+                
+                opcionesPreview.appendChild(div);
+            }
+        });
+
+        // Mostrar explicación si existe
+        const explicacionPreview = document.getElementById('explicacionPreview');
+        const explicacionContent = document.getElementById('explicacionContent');
+        if (explicacion.trim()) {
+            explicacionContent.innerHTML = explicacion;
+            explicacionPreview.classList.remove('hidden');
+        } else {
+            explicacionPreview.classList.add('hidden');
         }
-    </script>
+
+        // Mostrar enlace si existe
+        const enlacePreview = document.getElementById('enlacePreview');
+        const enlaceContent = document.getElementById('enlaceContent');
+        if (enlaceInfo.trim()) {
+            enlaceContent.href = enlaceInfo;
+            enlaceContent.textContent = enlaceInfo;
+            enlacePreview.classList.remove('hidden');
+        } else {
+            enlacePreview.classList.add('hidden');
+        }
+
+        // Mostrar modal
+        document.getElementById('previewModal').classList.remove('hidden');
+
+        // Renderizar KaTeX después de mostrar el modal
+        setTimeout(() => {
+            if (typeof renderMathInElement !== 'undefined') {
+                document.querySelectorAll('#previewModal .katex-content').forEach(function(element) {
+                    try {
+                        renderMathInElement(element, katexOpts);
+                    } catch (e) {
+                        console.error('Error renderizando KaTeX:', e);
+                    }
+                });
+            }
+        }, 100);
+    }
+
+    function cerrarPreview() {
+        document.getElementById('previewModal').classList.add('hidden');
+    }
+
+    // Cerrar modal al hacer clic fuera
+    document.addEventListener('click', function(event) {
+        const modal = document.getElementById('previewModal');
+        if (event.target === modal) {
+            cerrarPreview();
+        }
+    });
+
+    // Cerrar modal con tecla Escape
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') {
+            cerrarPreview();
+        }
+    });
+</script>
 @endpush
