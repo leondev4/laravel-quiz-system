@@ -18,6 +18,8 @@ class QuizForm extends Component
     public ?string $description = '';
     public bool $published = false;
     public bool $public = false;
+    public ?string $opens_at = '';
+    public ?string $closes_at = '';
 
     public array $questions = [];
 
@@ -31,6 +33,8 @@ class QuizForm extends Component
         'description' => 'nullable|string',
         'published' => 'boolean',
         'public' => 'boolean',
+        'opens_at' => 'nullable|date',
+        'closes_at' => 'nullable|date|after:opens_at',
         'questions' => 'nullable|array',
     ];
 
@@ -44,26 +48,19 @@ class QuizForm extends Component
             // Fill the properties from the model
             $this->title = $this->quiz->title;
             $this->slug = $this->quiz->slug;
-            $this->description = $this->quiz->description ?? '';
+            $this->description = $this->quiz->description;
             $this->published = $this->quiz->published;
             $this->public = $this->quiz->public;
+            $this->opens_at = $this->quiz->opens_at?->format('Y-m-d\TH:i') ?? '';
+            $this->closes_at = $this->quiz->closes_at?->format('Y-m-d\TH:i') ?? '';
             
-            // Convert to array of strings for proper binding
-            $this->questions = $this->quiz->questions()->pluck('id')->map(function($id) {
-                return (string) $id;
-            })->toArray();
-
-        } else {
-            $this->published = false;
-            $this->public = false;
-            $this->questions = [];
+            $this->questions = $this->quiz->questions->pluck('id')->map(fn($id) => (string) $id)->toArray();
         }
 
-        // Initialize lists after setting up the quiz data
         $this->initListsForFields();
     }
 
-    public function updatedTitle(): void
+    public function updatedTitle()
     {
         $this->slug = Str::slug($this->title);
     }
@@ -72,12 +69,13 @@ class QuizForm extends Component
     {
         $this->validate();
 
-        // Update the model with the form data
         $this->quiz->title = $this->title;
         $this->quiz->slug = $this->slug;
         $this->quiz->description = $this->description;
         $this->quiz->published = $this->published;
         $this->quiz->public = $this->public;
+        $this->quiz->opens_at = $this->opens_at ? \Carbon\Carbon::parse($this->opens_at) : null;
+        $this->quiz->closes_at = $this->closes_at ? \Carbon\Carbon::parse($this->closes_at) : null;
         
         // Guardar el id del usuario actual
         $this->quiz->user_id = auth()->id();

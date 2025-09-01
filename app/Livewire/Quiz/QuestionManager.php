@@ -130,16 +130,21 @@ class QuestionManager extends Component
     public function addSelectedQuestions()
     {
         if (empty($this->selectedQuestions)) {
-            session()->flash('error', 'No questions selected.');
+            session()->flash('error', 'No se seleccionaron preguntas.');
             return;
         }
+        
+        $count = count($this->selectedQuestions);
         
         $this->quiz->questions()->attach($this->selectedQuestions);
         $this->loadCurrentQuizQuestions();
         $this->selectedQuestions = [];
         $this->showAddModal = false;
         
-        session()->flash('success', count($this->selectedQuestions) . ' questions added to quiz.');
+        session()->flash('success', $count . ' preguntas agregadas al quiz.');
+        
+        // Disparar evento para re-renderizar KaTeX después de un pequeño delay
+        $this->dispatch('questions-updated');
     }
     
     public function removeQuestion($questionId)
@@ -147,13 +152,19 @@ class QuestionManager extends Component
         $this->quiz->questions()->detach($questionId);
         $this->loadCurrentQuizQuestions();
         
-        session()->flash('success', 'Question removed from quiz.');
+        session()->flash('success', 'Pregunta eliminada del quiz.');
+        
+        // Disparar evento para re-renderizar KaTeX
+        $this->dispatch('questions-updated');
     }
     
     public function openAddModal()
     {
         $this->showAddModal = true;
         $this->selectedQuestions = [];
+        
+        // Disparar evento para re-renderizar KaTeX en el modal después de que se abra
+        $this->dispatch('modal-opened');
     }
     
     public function closeAddModal()

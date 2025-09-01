@@ -39,6 +39,7 @@ class Show extends Component
 
         $this->currentQuestion = $this->questions[$this->currentQuestionIndex];
 
+        // Initialize answers array for each question
         for ($questionIndex = 0; $questionIndex < $this->questionsCount; $questionIndex++) {
             $this->answersOfQuestions[$questionIndex] = [];
         }
@@ -50,6 +51,12 @@ class Show extends Component
         return $this->questions->count();
     }
 
+    // Método para obtener la duración de la pregunta actual
+    public function getCurrentQuestionDuration()
+    {
+        return $this->currentQuestion->duration ?? config('quiz.secondsPerQuestion');
+    }
+
     public function nextQuestion()
     {
         $this->currentQuestionIndex++;
@@ -59,6 +66,9 @@ class Show extends Component
         }
 
         $this->currentQuestion = $this->questions[$this->currentQuestionIndex];
+        
+        // Disparar evento para actualizar el timer con la nueva duración
+        $this->dispatch('question-changed', duration: $this->getCurrentQuestionDuration());
     }
 
     public function submit()
@@ -75,52 +85,57 @@ class Show extends Component
 
         foreach ($this->answersOfQuestions as $key => $selectedAnswers) {
             $question = $this->questions[$key];
-            $correctOptionIds = $question->options->where('correct', true)->pluck('id')->toArray();
-            
-            // Normalize selectedAnswers to always be an array
-            if (!is_array($selectedAnswers)) {
-                $selectedAnswers = $selectedAnswers ? [$selectedAnswers] : [];
-            }
-            
-            // Remove empty values
-            $selectedAnswers = array_filter($selectedAnswers);
-            
-            // Check if the selected answers match exactly with correct answers
-            $isCorrect = !empty($selectedAnswers) && 
-                         count(array_diff($correctOptionIds, $selectedAnswers)) === 0 && 
-                         count(array_diff($selectedAnswers, $correctOptionIds)) === 0;
-            
-            if ($isCorrect) {
-                $result++;
-            }
 
-            // Create answer records for each selected option
-            if (!empty($selectedAnswers)) {
-                foreach ($selectedAnswers as $optionId) {
+            // Handle multiple selection answers
+            if (is_array($selectedAnswers) && !empty($selectedAnswers)) {
+                foreach ($selectedAnswers as $selectedAnswer) {
+                    $selectedOption = $question->options->where('id', $selectedAnswer)->first();
+                    
                     Answer::create([
                         'user_id' => auth()->id(),
                         'test_id' => $test->id,
                         'question_id' => $question->id,
-                        'option_id' => $optionId,
-                        'correct' => $isCorrect ? 1 : 0
+                        'option_id' => $selectedOption->id,
+                        'correct' => $selectedOption->correct
                     ]);
+                    
+                    if ($selectedOption->correct) {
+                        $result++;
+                    }
                 }
-            } else {
-                // No answer selected
+            } 
+            // Handle single selection answers
+            elseif (!is_array($selectedAnswers) && !empty($selectedAnswers)) {
+                $selectedOption = $question->options->where('id', $selectedAnswers)->first();
+                
                 Answer::create([
                     'user_id' => auth()->id(),
                     'test_id' => $test->id,
                     'question_id' => $question->id,
-                    'correct' => 0
+                    'option_id' => $selectedOption->id,
+                    'correct' => $selectedOption->correct
+                ]);
+                
+                if ($selectedOption->correct) {
+                    $result++;
+                }
+            }
+            // Handle unanswered questions
+            else {
+                Answer::create([
+                    'user_id' => auth()->id(),
+                    'test_id' => $test->id,
+                    'question_id' => $question->id,
+                    'option_id' => null,
+                    'correct' => false
                 ]);
             }
         }
 
-        $test->update([
-            'result' => $result
-        ]);
+        $test->update(['result' => $result]);
 
-        return $this->redirect(route('results.show', ['test' => $test]));
+        // Cambiar la redirección para usar la ruta correcta
+        return to_route('results.show', $test);
     }
 
     public function render(): View

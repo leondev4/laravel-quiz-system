@@ -3,7 +3,7 @@
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <h6 class="text-xl font-bold">Resultados del quizz</h6>
+                    <h6 class="text-xl font-bold">Resultados del Quiz</h6>
 
                     <table class="mt-4 table w-full table-view">
                         <tbody class="bg-white">
@@ -21,7 +21,7 @@
                                     class="border border-solid bg-gray-100 px-6 py-3 text-left text-sm font-semibold uppercase text-slate-600">
                                     FECHA</th>
                                 <td class="border border-solid px-6 py-3">
-                                    {{ $test->created_at->format('D m/Y, h:m A') ?? '' }}</td>
+                                    {{ $test->created_at->format('d/m/Y g:i A') ?? '' }}</td>
                             </tr>
                             <tr class="w-28">
                                 <th
@@ -30,8 +30,8 @@
                                 <td class="border border-solid px-6 py-3">
                                     {{ $test->result }} / {{ $questions_count }}
                                     @if ($test->time_spent)
-                                        (time: {{ sprintf('%.2f', $test->time_spent / 60) }}
-                                        minutes)
+                                        (tiempo: {{ sprintf('%.2f', $test->time_spent / 60) }}
+                                        minutos)
                                     @endif
                                 </td>
                             </tr>
@@ -44,12 +44,12 @@
         @isset($leaderboard)
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 pb-12">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-                        <h6 class="text-xl font-bold">Leaderboard</h6>
+                    {{-- <div class="p-6 text-gray-900">
+                        <h6 class="text-xl font-bold">Tabla de Clasificación</h6>
 
                         <table class="table mt-4 w-full table-view">
                             <thead>
-                                <th class="text-left">Rank</th>
+                                <th class="text-left">Posición</th>
                                 <th class="text-left">Usuario</th>
                                 <th class="text-left">Resultado</th>
                             </thead>
@@ -60,14 +60,14 @@
                                     ])>
                                         <td class="w-9">{{ $loop->iteration }}</td>
                                         <td class="w-1/2">{{ $test->user->name }}</td>
-                                        <td>{{ $test->result }} / {{ $questions_count }} (time:
-                                            {{ sprintf('%.2f', $test->time_spent / 60) }} minutes)
+                                        <td>{{ $test->result }} / {{ $questions_count }} (tiempo:
+                                            {{ sprintf('%.2f', $test->time_spent / 60) }} minutos)
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         @endisset
@@ -91,22 +91,22 @@
                                                 'font-bold' => $option->correct == 1,
                                             ])>
                                                 {{ $option->text }}
-                                                @if ($option->correct == 1)
-                                                    <span class="italic">(correct answer)</span>
-                                                @endif
+                                                {{-- @if ($option->correct == 1)
+                                                    <span class="italic">(respuesta correcta)</span>
+                                                @endif --}}
                                                 @if ($result->option_id == $option->id)
-                                                    <span class="italic">(your answer)</span>
+                                                    <span class="italic">(tu respuesta)</span>
                                                 @endif
                                             </li>
                                         @endforeach
                                         @if (is_null($result->option_id))
-                                            <span class="font-bold italic">Question unanswered.</span>
+                                            <span class="font-bold italic">Pregunta sin responder.</span>
                                         @endif
                                     </td>
                                 </tr>
                                 @if ($result->question->answer_explanation || $result->question->more_info_link)
                                     <tr>
-                                        <td>Answer Explanation</td>
+                                        <td>Explicación de la Respuesta</td>
                                         <td>
                                             {{ $result->question->answer_explanation }}
                                         </td>
@@ -114,7 +114,7 @@
                                     @if ($result->question->more_info_link)
                                         <tr>
                                             <td>
-                                                Read more:
+                                                Leer más:
                                             </td>
                                             <td>
                                                 <div class="mt-4">

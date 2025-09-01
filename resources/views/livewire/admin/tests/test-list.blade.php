@@ -64,7 +64,7 @@
                                 </th>
                                 <th class="bg-gray-50 px-6 py-3 text-left">
                                     <span
-                                        class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Creado</span>
+                                        class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">FEcha</span>
                                 </th>
                                 <th class="w-40 bg-gray-50 px-6 py-3 text-left">
                                     <span
@@ -97,7 +97,7 @@
                                         minutos
                                     </td>
                                     <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                        {{ $test->created_at->format('M d, Y') }}
+                                        {{ $test->created_at->format('d/m/Y') }}
                                     </td>
                                     <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                         <div class="flex gap-2">
