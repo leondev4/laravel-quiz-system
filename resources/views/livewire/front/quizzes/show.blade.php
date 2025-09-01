@@ -3,7 +3,8 @@
     secondsLeft: {{ $this->getCurrentQuestionDuration() }},
     originalDuration: {{ $this->getCurrentQuestionDuration() }},
     questionIndex: {{ $currentQuestionIndex }},
-    timerInterval: null
+    timerInterval: null,
+    katexRendered: false
 }" 
 x-init="
     console.log('Iniciando timer con:', secondsLeft, 'segundos');
@@ -13,9 +14,8 @@ x-init="
         setTimeout(() => {
             console.log('Renderizando KaTeX...');
             if (typeof renderMathInElement !== 'undefined') {
-                document.querySelectorAll('.katex-content').forEach(function(element) {
+                document.querySelectorAll('.katex-content:not([data-katex-done])').forEach(function(element) {
                     console.log('Procesando elemento:', element);
-                    element.querySelectorAll('.katex').forEach(katexEl => katexEl.remove());
                     try {
                         renderMathInElement(element, {
                             delimiters: [
@@ -27,14 +27,19 @@ x-init="
                             throwOnError: false,
                             errorColor: '#cc0000'
                         });
+                        // Marcar como procesado y proteger con wire:ignore
+                        element.setAttribute('data-katex-done', 'true');
+                        element.setAttribute('wire:ignore', '');
+                        console.log('KaTeX renderizado y protegido');
                     } catch (e) {
                         console.error('Error renderizando KaTeX:', e);
                     }
                 });
+                katexRendered = true;
             } else {
                 console.warn('renderMathInElement no disponible');
             }
-        }, 200);
+        }, 300);
     };
     
     // Función para iniciar el contador
@@ -45,7 +50,6 @@ x-init="
         }
         
         timerInterval = setInterval(() => {
-            console.log('Timer tick:', secondsLeft);
             if (secondsLeft > 1) { 
                 secondsLeft = secondsLeft - 1; 
             } else {
@@ -56,11 +60,15 @@ x-init="
         }, 1000);
     };
 
-    // Renderizar KaTeX inicial
-    renderKatex();
+    // Renderizar KaTeX inicial con delay más largo
+    setTimeout(() => {
+        renderKatex();
+    }, 500);
     
-    // Iniciar contador
-    startCountdown();
+    // Iniciar contador después del KaTeX
+    setTimeout(() => {
+        startCountdown();
+    }, 800);
 
     // Escuchar cuando cambia la pregunta
     $wire.on('question-changed', (event) => {
@@ -69,8 +77,20 @@ x-init="
         secondsLeft = event.duration;
         originalDuration = event.duration;
         questionIndex++;
-        renderKatex();
-        startCountdown();
+        
+        // Limpiar marcas para nueva pregunta
+        document.querySelectorAll('.katex-content').forEach(function(element) {
+            element.removeAttribute('data-katex-done');
+            element.removeAttribute('wire:ignore');
+        });
+        
+        // Renderizar KaTeX para nueva pregunta y luego iniciar timer
+        setTimeout(() => {
+            renderKatex();
+            setTimeout(() => {
+                startCountdown();
+            }, 200);
+        }, 100);
     });
 ">
 
@@ -87,7 +107,7 @@ x-init="
     </div>
 
     <span class="text-bold">Pregunta {{ $currentQuestionIndex + 1 }} de {{ $this->questionsCount }}:</span>
-    <h2 class="mb-4 text-2xl katex-content">{!! $currentQuestion->text !!}</h2>
+    <h2 class="mb-4 text-2xl katex-content" wire:key="question-{{ $currentQuestionIndex }}">{!! $currentQuestion->text !!}</h2>
 
     @if ($currentQuestion->code_snippet)
         <pre class="mb-4 border-2 border-solid bg-gray-50 p-2">{{ $currentQuestion->code_snippet }}</pre>
@@ -121,7 +141,7 @@ x-init="
                                value="{{ $option->id }}"
                                class="mr-2">
                     @endif
-                    <span class="katex-content">{!! $option->text !!}</span>
+                    <span class="katex-content" wire:key="option-{{ $option->id }}">{!! $option->text !!}</span>
                 </label>
             </div>
         @endforeach
@@ -167,18 +187,16 @@ x-init="
     
     checkKatexReady();
 
-    // Función global para renderizar KaTeX
+    // Función global para renderizar KaTeX mejorada
     window.renderAllKatex = function() {
         if (!window.katexReady) {
             console.log('KaTeX no está listo aún');
+            setTimeout(window.renderAllKatex, 200);
             return;
         }
         
         console.log('Renderizando todo el KaTeX...');
-        document.querySelectorAll('.katex-content').forEach(function(element) {
-            // Limpiar renderizados previos
-            element.querySelectorAll('.katex').forEach(katexEl => katexEl.remove());
-            
+        document.querySelectorAll('.katex-content:not([data-katex-done])').forEach(function(element) {
             try {
                 renderMathInElement(element, {
                     delimiters: [
@@ -191,6 +209,8 @@ x-init="
                     errorColor: '#cc0000',
                     strict: false
                 });
+                element.setAttribute('data-katex-done', 'true');
+                element.setAttribute('wire:ignore', '');
                 console.log('KaTeX renderizado para:', element);
             } catch (e) {
                 console.error('Error renderizando KaTeX:', e);
@@ -198,9 +218,9 @@ x-init="
         });
     };
 
-    // Renderizar cuando la página se carga
+    // Renderizar cuando la página se carga con delay más largo
     document.addEventListener("DOMContentLoaded", function() {
-        setTimeout(window.renderAllKatex, 1000);
+        setTimeout(window.renderAllKatex, 1500);
     });
 
     // Renderizar después de actualizaciones de Livewire

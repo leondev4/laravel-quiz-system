@@ -49,13 +49,13 @@
                                             {{ $loop->iteration }}
                                         </td>
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $test->quiz->title }}
+                                            {{ $test->quiz?->title ?? 'Quiz eliminado' }}
                                         </td>
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $test->quiz->description }}
+                                            {{ $test->quiz?->description ?? 'N/A' }}
                                         </td>
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $test->result . '/' . $test->quiz->questions_count }}
+                                            {{ $test->result . '/' . ($test->questions_count ?? $test->quiz?->questions_count ?? '0') }}
                                         </td>
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{ sprintf('%.2f', $test->time_spent / 60) }} minutos

@@ -60,7 +60,7 @@
                                 </th>
                                 <th class="bg-gray-50 px-6 py-3 text-left">
                                     <span
-                                        class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Tiempo utilizad</span>
+                                        class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Tiempo utilizado</span>
                                 </th>
                                 <th class="bg-gray-50 px-6 py-3 text-left">
                                     <span
@@ -93,8 +93,8 @@
                                         {{ $test->ip_address }}
                                     </td>
                                     <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                        {{ intval($test->time_spent / 60) }}:{{ gmdate('s', $test->time_spent) }}
-                                        minutos
+                                        {{ intval($test->time_spent / 60) }} min. y {{ gmdate('s', $test->time_spent) }}
+                                        seg.
                                     </td>
                                     <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                         {{ $test->created_at->format('d/m/Y') }}
