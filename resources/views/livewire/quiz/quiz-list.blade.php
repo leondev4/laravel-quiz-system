@@ -24,36 +24,29 @@
                         <table class="min-w-full border divide-y divide-gray-200">
                             <thead>
                                 <tr>
-                                    <th class="w-16 bg-gray-50 px-6 py-3 text-left">
-                                        <span
-                                            class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">ID</span>
+                                    <th class="bg-gray-50 px-6 py-3 text-left">
+                                        <span class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">ID</span>
                                     </th>
                                     <th class="bg-gray-50 px-6 py-3 text-left">
-                                        <span
-                                            class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Title</span>
+                                        <span class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Título</span>
                                     </th>
                                     <th class="bg-gray-50 px-6 py-3 text-left">
-                                        <span
-                                            class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Slug</span>
+                                        <span class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Estado</span>
                                     </th>
                                     <th class="bg-gray-50 px-6 py-3 text-left">
-                                        <span
-                                            class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Description</span>
+                                        <span class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Apertura/Cierre</span>
                                     </th>
                                     <th class="bg-gray-50 px-6 py-3 text-left">
-                                        <span
-                                            class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Questions
-                                            count</span>
+                                        <span class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Preguntas</span>
                                     </th>
                                     <th class="bg-gray-50 px-6 py-3 text-left">
-                                        <span
-                                            class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Published</span>
+                                        <span class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Publicado</span>
                                     </th>
                                     <th class="bg-gray-50 px-6 py-3 text-left">
-                                        <span
-                                            class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Public</span>
+                                        <span class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Público</span>
                                     </th>
                                     <th class="w-40 bg-gray-50 px-6 py-3 text-left">
+                                        <span class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Acciones</span>
                                     </th>
                                 </tr>
                             </thead>
@@ -68,10 +61,35 @@
                                             {{ $quiz->title }}
                                         </td>
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $quiz->slug }}
+                                            @php
+                                                $status = $quiz->status;
+                                                $statusColors = [
+                                                    'open' => 'bg-green-100 text-green-800',
+                                                    'upcoming' => 'bg-yellow-100 text-yellow-800',
+                                                    'closed' => 'bg-red-100 text-red-800'
+                                                ];
+                                                $statusLabels = [
+                                                    'open' => 'Abierto',
+                                                    'upcoming' => 'Próximamente',
+                                                    'closed' => 'Cerrado'
+                                                ];
+                                            @endphp
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $statusColors[$status] }}">
+                                                {{ $statusLabels[$status] }}
+                                            </span>
                                         </td>
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $quiz->description }}
+                                            <div class="text-xs">
+                                                @if($quiz->opens_at)
+                                                    <div>Abre: {{ $quiz->opens_at->format('d/m/Y H:i') }}</div>
+                                                @endif
+                                                @if($quiz->closes_at)
+                                                    <div>Cierra: {{ $quiz->closes_at->format('d/m/Y H:i') }}</div>
+                                                @endif
+                                                @if(!$quiz->opens_at && !$quiz->closes_at)
+                                                    <span class="text-gray-500">Siempre disponible</span>
+                                                @endif
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             {{ $quiz->questions_count }}
@@ -94,15 +112,15 @@
                                             <div class="flex items-center space-x-2">
                                                 <a href="{{ route('quiz.edit', $quiz) }}"
                                                     class="inline-flex items-center justify-center w-8 h-8 rounded-md border border-transparent bg-gray-800 text-white hover:bg-gray-700 transition-colors"
-                                                    title="Edit Quiz">
+                                                    title="Editar Examen">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                                     </svg>
                                                 </a>
                                                 <button wire:click="delete({{ $quiz->id }})"
                                                     class="inline-flex items-center justify-center w-8 h-8 rounded-md border border-transparent bg-red-500 text-white hover:bg-red-600 transition-colors"
-                                                    title="Delete Quiz"
-                                                    onclick="return confirm('Are you sure you want to delete this quiz?')">
+                                                    title="Eliminar Examen"
+                                                    onclick="return confirm('¿Estás seguro de que deseas eliminar este examen?')">
                                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                     </svg>
@@ -114,7 +132,7 @@
                                     <tr>
                                         <td colspan="8"
                                             class="px-6 py-4 text-center leading-5 text-gray-900 whitespace-no-wrap">
-                                            No quizzes were found.
+                                            No se encontraron exámenes.
                                         </td>
                                     </tr>
                                 @endforelse

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->longText('description')->nullable();
             $table->boolean('published')->default(0);
             $table->boolean('public')->default(0);
+            $table->foreignId('user_id')->nullable()->constrained();
             $table->timestamps();
             $table->softDeletes();
         });

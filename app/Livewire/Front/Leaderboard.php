@@ -21,8 +21,10 @@ class Leaderboard extends Component
 
     public function render(): View
     {
+        $user = auth()->user();
 
         $tests = Test::query()
+            ->where('user_id', $user?->id) // solo tests del usuario actual
             ->whereHas('user')
             ->with(['user' => function ($query) {
                 $query->select('id', 'name');

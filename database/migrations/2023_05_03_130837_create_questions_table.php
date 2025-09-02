@@ -17,6 +17,8 @@ return new class extends Migration
             $table->text('code_snippet')->nullable();
             $table->text('answer_explanation')->nullable();
             $table->string('more_info_link')->nullable();
+            $table->integer('duration')->default(60); // duration in seconds
+            $table->foreignId('user_id')->nullable()->constrained();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -36,6 +36,10 @@
                                         <span
                                             class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Email</span>
                                     </th>
+                                    <th class="bg-gray-50 px-6 py-3 text-left">
+                                        <span
+                                            class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500"></span>
+                                    </th>
                                 </tr>
                             </thead>
 
@@ -53,8 +57,12 @@
                                         </td>
                                         <td>
                                             <button wire:click="delete({{ $admin->id }})"
-                                                class="rounded-md border border-transparent bg-red-200 px-4 py-2 text-xs uppercase text-red-500 hover:bg-red-300 hover:text-red-700">
-                                                Delete
+                                                class="inline-flex items-center justify-center w-8 h-8 rounded-md border border-transparent bg-red-500 text-white hover:bg-red-600 transition-colors"
+                                                title="Eliminar administrador"
+                                                onclick="return confirm('¿Estás seguro de que quieres eliminar este administrador?')">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
                                             </button>
                                         </td>
                                     </tr>

@@ -28,8 +28,10 @@ use Illuminate\Support\Facades\Route;
 // public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::middleware('throttle:1,1')->group(function () {
+    //vistar quiz para responder preguntas
     Route::get('quiz/{quiz}', [HomeController::class, 'show'])->name('quiz.show');
 });
+//mostrar resultados despues de terminar el quiz
 Route::get('results/{test}', [ResultController::class, 'show'])->name('results.show');
 
 // protected routes

@@ -9,12 +9,13 @@ use Livewire\Component;
 class QuestionForm extends Component
 {
     public Question $question;
-    
+
     // Add these properties for explicit binding
-    public string $text = '';
+    public string $text = 'The quadratic formula is $$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$$. Another example: $E=mc^2$';
     public ?string $code_snippet = '';
     public ?string $answer_explanation = '';
     public ?string $more_info_link = '';
+    public int $duration = 0; // duración en segundos
 
     public array $options = [];
 
@@ -27,6 +28,7 @@ class QuestionForm extends Component
         'more_info_link' => 'nullable|url',
         'options' => 'required|array',
         'options.*.text' => 'required|string',
+        'duration' => 'required|integer|min:1', // regla para duración
     ];
 
     public function mount(Question $question): void
@@ -35,12 +37,13 @@ class QuestionForm extends Component
 
         if ($this->question->exists) {
             $this->editing = true;
-            
+
             // Fill the properties from the model
             $this->text = $this->question->text;
             $this->code_snippet = $this->question->code_snippet;
             $this->answer_explanation = $this->question->answer_explanation;
             $this->more_info_link = $this->question->more_info_link;
+            $this->duration = $this->question->duration; // cargar duración
 
             foreach ($this->question->options as $option) {
                 $this->options[] = [
@@ -68,6 +71,7 @@ class QuestionForm extends Component
 
     public function save()
     {
+        
         $this->validate();
 
         // Update the model with the form data
@@ -75,7 +79,9 @@ class QuestionForm extends Component
         $this->question->code_snippet = $this->code_snippet;
         $this->question->answer_explanation = $this->answer_explanation;
         $this->question->more_info_link = $this->more_info_link;
-        
+        $this->question->duration = $this->duration; // guardar duración
+        $this->question->user_id = auth()->user()->id;
+
         $this->question->save();
 
         $this->question->options()->delete();

@@ -34,8 +34,10 @@ class QuizList extends Component
 
     public function render(): View
     {
-        $quizzes = Quiz::withCount('questions')->latest()->paginate();
-
+        $quizzes = Quiz::
+        where('user_id',auth()->id())->
+        withCount('questions')->latest()->paginate();
+        // dd($quizzes);
         return view('livewire.quiz.quiz-list', compact('quizzes'));
     }
 }
