@@ -26,5 +26,10 @@ class AppServiceProvider extends ServiceProvider
          Blade::if('noadmin', function() {
             return ! auth()->user()?->is_admin;
         });
+        /*descomentar para production
+        y en .env colocar APP_ENV=production
+        */
+    
+        // \URL::forceScheme('https'); 
     }
 }
