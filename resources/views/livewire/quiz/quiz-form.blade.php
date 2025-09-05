@@ -36,6 +36,23 @@
                             <x-input-error :messages="$errors->get('description')" class="mt-2" />
                         </div>
 
+                        <!-- Campo de materia OBLIGATORIO -->
+                        <div class="mt-4">
+                            <x-input-label for="subject_id" value="Materia *" class="font-semibold" />
+                            <select wire:model.live="subject_id" id="subject_id" 
+                                    class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                    required>
+                                <option value="">-- Seleccionar materia --</option>
+                                @foreach($listsForFields['subjects'] ?? [] as $id => $name)
+                                    <option value="{{ $id }}">{{ $name }}</option>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('subject_id')" class="mt-2" />
+                            <p class="text-xs text-gray-500 mt-1">
+                                <span class="text-red-500">*</span> La materia es obligatoria para organizar los quizzes
+                            </p>
+                        </div>
+
                         <!-- Fechas de apertura y cierre -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                             <div>
@@ -67,13 +84,13 @@
                             <x-input-error :messages="$errors->get('published')" class="mt-2" />
                         </div>
 
-                        <div class="mt-4">
+                        {{-- <div class="mt-4">
                             <div class="flex items-center">
                                 <x-input-label for="public" value="Público" />
                                 <input type="checkbox" id="public" class="mr-1 ml-2" wire:model.live="public">
                             </div>
                             <x-input-error :messages="$errors->get('public')" class="mt-2" />
-                        </div>
+                        </div> --}}
 
                         <div class="mt-4">
                             <x-primary-button>

@@ -14,10 +14,8 @@ class QuestionManager extends Component
 
     public Quiz $quiz;
     
-    // Search and filter properties
+    // Search properties
     public string $search = '';
-    public string $dateFrom = '';
-    public string $dateTo = '';
     
     // Selection properties
     public array $selectedQuestions = [];
@@ -40,51 +38,34 @@ class QuestionManager extends Component
     public function updatedSearch()
     {
         $this->resetPage();
-    }
-    
-    public function updatedDateFrom()
-    {
-        $this->resetPage();
-    }
-    
-    public function updatedDateTo()
-    {
-        $this->resetPage();
+        // Disparar evento para re-renderizar KaTeX después del filtrado
+        $this->js('setTimeout(() => { 
+            console.log("Search updated, disparando evento");
+            $dispatch("search-updated"); 
+        }, 100)');
     }
     
     #[Computed]
     public function availableQuestions()
     {
-        $query = Question::query()->
-            where('user_id',auth()->id())
+        $query = Question::query()
+            ->where('user_id', auth()->id())
             ->with(['options' => function ($query) {
                 $query->orderBy('created_at', 'desc');
             }])
             ->whereNotIn('id', $this->currentQuizQuestions);
             
+        // Filtrar por la misma materia del quiz actual
+        if ($this->quiz->subject_id) {
+            $query->where('subject_id', $this->quiz->subject_id);
+        }
+            
         if ($this->search) {
             $query->where('text', 'like', '%' . $this->search . '%');
         }
         
-        // Filter by answer (options) dates
-        if ($this->dateFrom || $this->dateTo) {
-            $query->whereHas('options', function ($optionQuery) {
-                if ($this->dateFrom) {
-                    $optionQuery->whereDate('created_at', '>=', $this->dateFrom);
-                }
-                if ($this->dateTo) {
-                    $optionQuery->whereDate('created_at', '<=', $this->dateTo);
-                }
-            });
-        }
-        
-        // Order by the most recent answer date
-        $query->addSelect([
-            'latest_answer_date' => \App\Models\Option::select('created_at')
-                ->whereColumn('question_id', 'questions.id')
-                ->orderBy('created_at', 'desc')
-                ->limit(1)
-        ])->orderBy('latest_answer_date', 'desc');
+        // Ordenar por fecha de creación más reciente
+        $query->orderBy('created_at', 'desc');
         
         return $query->paginate(10);
     }
@@ -114,17 +95,26 @@ class QuestionManager extends Component
         } else {
             $this->selectedQuestions[] = $questionId;
         }
+        
+        // Disparar evento para mantener KaTeX renderizado
+        $this->dispatch('question-toggled');
     }
     
     public function selectAllVisible()
     {
         $visibleQuestionIds = $this->availableQuestions->pluck('id')->toArray();
         $this->selectedQuestions = array_unique(array_merge($this->selectedQuestions, $visibleQuestionIds));
+        
+        // Disparar evento para mantener KaTeX renderizado
+        $this->dispatch('selection-updated');
     }
     
     public function clearSelection()
     {
         $this->selectedQuestions = [];
+        
+        // Disparar evento para mantener KaTeX renderizado
+        $this->dispatch('selection-updated');
     }
     
     public function addSelectedQuestions()
@@ -143,7 +133,7 @@ class QuestionManager extends Component
         
         session()->flash('success', $count . ' preguntas agregadas al quiz.');
         
-        // Disparar evento para re-renderizar KaTeX después de un pequeño delay
+        // Disparar evento para re-renderizar KaTeX después de agregar
         $this->dispatch('questions-updated');
     }
     
@@ -163,8 +153,11 @@ class QuestionManager extends Component
         $this->showAddModal = true;
         $this->selectedQuestions = [];
         
-        // Disparar evento para re-renderizar KaTeX en el modal después de que se abra
-        $this->dispatch('modal-opened');
+        // Disparar evento para re-renderizar KaTeX en el modal
+        $this->js('setTimeout(() => { 
+            console.log("Modal opened, disparando evento");
+            $dispatch("modal-opened"); 
+        }, 300)');
     }
     
     public function closeAddModal()
@@ -176,9 +169,10 @@ class QuestionManager extends Component
     public function clearFilters()
     {
         $this->search = '';
-        $this->dateFrom = '';
-        $this->dateTo = '';
         $this->resetPage();
+        
+        // Disparar evento para re-renderizar KaTeX después de limpiar
+        $this->dispatch('filters-cleared');
     }
     
     public function render()

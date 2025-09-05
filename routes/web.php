@@ -7,6 +7,7 @@ use App\Livewire\Admin\AdminForm;
 use App\Livewire\Admin\AdminList;
 use App\Livewire\Admin\Tests\TestList;
 use App\Livewire\Admin\Users\UserList;
+use App\Livewire\Admin\Subjects\SubjectList;
 use App\Livewire\Front\Leaderboard;
 use App\Livewire\Front\Results\ResultList;
 use App\Livewire\Question\QuestionForm;
@@ -58,6 +59,8 @@ Route::middleware('auth')->group(function () {
         Route::get('admins/create', AdminForm::class)->name('admin.create');
 
         Route::get('users', UserList::class)->name('users');
+
+        Route::get('subjects', SubjectList::class)->name('subjects');
 
         Route::get('tests', TestList::class)->name('tests');
     });

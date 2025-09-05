@@ -43,10 +43,6 @@
                     
                     <!-- Resultado Principal -->
                     <div class="flex items-center space-x-8">
-                        {{-- <div class="w-24 h-24 rounded-full flex items-center justify-center text-4xl
-                            {{ $percentage >= 90 ? 'bg-green-100' : ($percentage >= 75 ? 'bg-blue-100' : ($percentage >= 60 ? 'bg-yellow-100' : 'bg-red-100')) }}">
-                            {{ $percentage >= 90 ? '🏆' : ($percentage >= 75 ? '🎯' : ($percentage >= 60 ? '📝' : '📚')) }}
-                        </div> --}}
                         <div class="space-y-2">
                             <h1 class="text-4xl font-bold text-gray-900">
                                 {{ $test->result }}/{{ $questions_count }}
@@ -98,10 +94,10 @@
                 </div>
             </div>
 
-            <!-- Revisión Detallada de Preguntas -->
+            <!-- Revisión de Preguntas y Respuestas -->
             <div class="bg-white rounded-xl shadow-lg p-6">
                 <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-xl font-bold text-gray-900">Revisión Detallada</h2>
+                    <h2 class="text-xl font-bold text-gray-900">Revisión de Preguntas</h2>
                     <span class="text-sm text-gray-500">{{ $results->count() }} preguntas</span>
                 </div>
 
@@ -115,16 +111,13 @@
                                         <span class="bg-gray-100 text-gray-800 text-sm font-medium px-3 py-1 rounded-full mr-3">
                                             Pregunta {{ $loop->iteration }}
                                         </span>
-                                        @php
-                                            $isCorrect = false;
-                                            if ($result->option_id) {
-                                                $selectedOption = $result->question->options->where('id', $result->option_id)->first();
-                                                $isCorrect = $selectedOption && $selectedOption->correct;
-                                            }
-                                        @endphp
-                                        {{-- <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
-                                            {{ $isCorrect ? '✓ Correcta' : '✗ Incorrecta' }}
-                                        </span> --}}
+                                        
+                                        <!-- Indicador si no respondió -->
+                                        @if(is_null($result->option_id))
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                Sin responder
+                                            </span>
+                                        @endif
                                     </div>
                                     <h3 class="text-lg font-medium text-gray-900 katex-content">
                                         {!! $result->question->text !!}
@@ -141,65 +134,57 @@
                                 </div>
                             @endif
 
-                            <!-- Opciones de respuesta -->
+                            <!-- Todas las opciones de respuesta -->
                             <div class="mb-4">
                                 <h4 class="font-medium text-gray-700 mb-3">Opciones de respuesta:</h4>
+                                
                                 <div class="space-y-2">
-                                    @foreach ($result->question->options as $option)
+                                    @foreach($result->question->options as $option)
                                         @php
                                             $isSelected = $result->option_id == $option->id;
-                                            $isCorrectOption = $option->correct == 1;
                                         @endphp
-                                        <div class="flex items-start p-3 rounded-lg border
-                                            {{ $isCorrectOption ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200' }}
-                                            {{ $isSelected && !$isCorrectOption ? 'ring-2 ring-red-200 bg-red-50' : '' }}">
-                                            
-                                            <div class="flex-shrink-0 mt-1 mr-3">
-                                                @if($isCorrectOption)
-                                                    <div class="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
-                                                        <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                                                        </svg>
-                                                    </div>
-                                                @elseif($isSelected)
-                                                    <div class="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                                                        <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                                        </svg>
-                                                    </div>
-                                                @else
-                                                    <div class="w-5 h-5 bg-gray-300 rounded-full"></div>
-                                                @endif
-                                            </div>
-                                            
-                                            <div class="flex-1">
-                                                <span class="katex-content {{ $isCorrectOption ? 'font-semibold text-green-800' : 'text-gray-700' }}">
-                                                    {!! $option->text !!}
-                                                </span>
-                                                <div class="mt-1 text-xs">
-                                                    {{-- @if($isCorrectOption)
-                                                        <span class="text-green-600 font-medium">✓ Respuesta correcta</span>
-                                                    @endif --}}
+                                        <div class="p-3 rounded-lg border {{ $isSelected ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200' }}">
+                                            <div class="flex items-start">
+                                                <div class="flex-shrink-0 mt-1 mr-3">
                                                     @if($isSelected)
-                                                        <span class="text-blue-600 font-medium">← Tu selección</span>
+                                                        <div class="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                                                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                                            </svg>
+                                                        </div>
+                                                    @else
+                                                        <div class="w-5 h-5 bg-gray-300 rounded-full flex items-center justify-center">
+                                                            <div class="w-2 h-2 bg-gray-500 rounded-full"></div>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="flex-1">
+                                                    <span class="katex-content {{ $isSelected ? 'text-green-800 font-medium' : 'text-gray-700' }}">
+                                                        {!! $option->text !!}
+                                                    </span>
+                                                    @if($isSelected)
+                                                        <span class="ml-2 text-xs text-green-600 font-medium">(Tu respuesta)</span>
                                                     @endif
                                                 </div>
                                             </div>
                                         </div>
                                     @endforeach
-                                    
-                                    @if (is_null($result->option_id))
-                                        <div class="flex items-center p-3 rounded-lg bg-yellow-50 border border-yellow-200">
-                                            <svg class="w-5 h-5 text-yellow-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                </div>
+
+                                <!-- Mensaje si no respondió -->
+                                @if(is_null($result->option_id))
+                                    <div class="mt-3 p-3 rounded-lg bg-yellow-50 border border-yellow-200">
+                                        <div class="flex items-center">
+                                            <svg class="w-5 h-5 text-yellow-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                                             </svg>
-                                            <span class="font-medium text-yellow-800">Pregunta sin responder</span>
+                                            <span class="text-yellow-800 font-medium">No respondiste esta pregunta</span>
                                         </div>
-                                    @endif
-                                </div>
+                                    </div>
+                                @endif
                             </div>
 
-                            <!-- Explicación de la respuesta -->
+                            <!-- Explicación de la respuesta (opcional) -->
                             @if ($result->question->answer_explanation || $result->question->more_info_link)
                                 <div class="border-t border-gray-200 pt-4">
                                     @if($result->question->answer_explanation)

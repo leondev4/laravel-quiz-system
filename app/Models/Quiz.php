@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Carbon\Carbon;
 
 class Quiz extends Model
@@ -19,6 +20,7 @@ class Quiz extends Model
         'public',
         'opens_at',
         'closes_at',
+        'subject_id', // Ahora obligatorio
     ];
 
     protected $casts = [
@@ -47,8 +49,21 @@ class Quiz extends Model
     {
         return $q->where('published', true);
     }
+    
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    // Relación obligatoria con materia
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class);
+    }
+
+    // Scope para filtrar por materia
+    public function scopeBySubject($query, $subjectId)
+    {
+        return $query->where('subject_id', $subjectId);
     }
 
     // Nuevos scopes para verificar disponibilidad

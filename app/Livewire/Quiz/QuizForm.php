@@ -4,6 +4,7 @@ namespace App\Livewire\Quiz;
 
 use App\Models\Question;
 use App\Models\Quiz;
+use App\Models\Subject;
 use Illuminate\Contracts\View\View;
 use Livewire\Component;
 use Illuminate\Support\Str;
@@ -20,6 +21,7 @@ class QuizForm extends Component
     public bool $public = false;
     public ?string $opens_at = '';
     public ?string $closes_at = '';
+    public ?int $subject_id = null;
 
     public array $questions = [];
 
@@ -35,7 +37,14 @@ class QuizForm extends Component
         'public' => 'boolean',
         'opens_at' => 'nullable|date',
         'closes_at' => 'nullable|date|after:opens_at',
+        'subject_id' => 'required|exists:subjects,id',
         'questions' => 'nullable|array',
+    ];
+
+    // Mensajes de validación personalizados
+    protected $messages = [
+        'subject_id.required' => 'La materia es obligatoria.',
+        'subject_id.exists' => 'La materia seleccionada no existe.',
     ];
 
     public function mount(Quiz $quiz)
@@ -50,7 +59,8 @@ class QuizForm extends Component
             $this->slug = $this->quiz->slug;
             $this->description = $this->quiz->description;
             $this->published = $this->quiz->published;
-            $this->public = $this->quiz->public;
+            $this->public = $this->quiz->public; // Corregir esta línea
+            $this->subject_id = $this->quiz->subject_id;
             $this->opens_at = $this->quiz->opens_at?->format('Y-m-d\TH:i') ?? '';
             $this->closes_at = $this->quiz->closes_at?->format('Y-m-d\TH:i') ?? '';
             
@@ -73,7 +83,8 @@ class QuizForm extends Component
         $this->quiz->slug = $this->slug;
         $this->quiz->description = $this->description;
         $this->quiz->published = $this->published;
-        $this->quiz->public = $this->public;
+        $this->quiz->public = $this->public; // Corregir esta línea - era $this->quiz->public
+        $this->quiz->subject_id = $this->subject_id;
         $this->quiz->opens_at = $this->opens_at ? \Carbon\Carbon::parse($this->opens_at) : null;
         $this->quiz->closes_at = $this->closes_at ? \Carbon\Carbon::parse($this->closes_at) : null;
         
@@ -93,13 +104,17 @@ class QuizForm extends Component
             return [(string) $id => $text];
         })->toArray();
     }
+    
     protected function initListsForFields()
     {
         $this->listsForFields['questions'] = Question::pluck('text', 'id')->mapWithKeys(function($text, $id) {
             return [(string) $id => $text];
         })->toArray();
+        
+        // Solo materias activas
+        $this->listsForFields['subjects'] = Subject::active()->pluck('name', 'id')->toArray();
     }
-    // Add this method to ensure the component is properly initialized
+    
     public function hydrate()
     {
         if (empty($this->listsForFields)) {

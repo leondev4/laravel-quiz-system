@@ -13,11 +13,62 @@
         <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
             <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <div class="mb-4">
-                        <a href="{{ route('quiz.create') }}"
-                            class="inline-flex items-center rounded-md border border-transparent bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-gray-700">
-                            Create Quiz
-                        </a>
+                    
+                    {{-- Header con botón crear y estadísticas --}}
+                    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div>
+                            <a href="{{ route('quiz.create') }}"
+                                class="inline-flex items-center rounded-md border border-transparent bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-gray-700">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                </svg>
+                                Crear Quiz
+                            </a>
+                        </div>
+                        <div class="text-sm text-gray-600">
+                            Total: {{ $quizzes->total() }} quizzes
+                        </div>
+                    </div>
+
+                    {{-- Filtros --}}
+                    <div class="mb-6 bg-gray-50 rounded-lg p-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {{-- Filtro de búsqueda --}}
+                            <div>
+                                <label for="search" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Buscar quizzes
+                                </label>
+                                <input type="text" 
+                                       id="search"
+                                       wire:model.live.debounce.300ms="search" 
+                                       placeholder="Buscar por título del quiz..."
+                                       class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            </div>
+
+                            {{-- Filtro por materia --}}
+                            <div>
+                                <label for="subject_id" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Filtrar por materia
+                                </label>
+                                <select wire:model.live="subject_id" id="subject_id" 
+                                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <option value="">Todas las materias</option>
+                                    @foreach($subjects as $subject)
+                                        <option value="{{ $subject->id }}">{{ $subject->code }} - {{ $subject->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        {{-- Limpiar filtros --}}
+                        @if($search || $subject_id)
+                            <div class="mt-4 pt-4 border-t border-gray-200">
+                                <button wire:click="clearFilters"
+                                        class="text-sm text-red-600 hover:text-red-700 font-medium">
+                                    Limpiar filtros
+                                </button>
+                            </div>
+                        @endif
                     </div>
 
                     <div class="mb-4 min-w-full overflow-hidden overflow-x-auto align-middle sm:rounded-md">
@@ -29,6 +80,9 @@
                                     </th>
                                     <th class="bg-gray-50 px-6 py-3 text-left">
                                         <span class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Título</span>
+                                    </th>
+                                    <th class="bg-gray-50 px-6 py-3 text-left">
+                                        <span class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Materia</span>
                                     </th>
                                     <th class="bg-gray-50 px-6 py-3 text-left">
                                         <span class="text-xs font-medium uppercase leading-4 tracking-wider text-gray-500">Estado</span>
@@ -58,7 +112,20 @@
                                             {{ $quiz->id }}
                                         </td>
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $quiz->title }}
+                                            <div class="font-medium">{{ $quiz->title }}</div>
+                                            @if($quiz->description)
+                                                <div class="text-xs text-gray-500 mt-1">{{ Str::limit($quiz->description, 50) }}</div>
+                                            @endif
+                                        </td>
+                                        <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
+                                            @if($quiz->subject)
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                                    {{ $quiz->subject->code }}
+                                                </span>
+                                                <div class="text-xs text-gray-500 mt-1">{{ $quiz->subject->name }}</div>
+                                            @else
+                                                <span class="text-gray-400">Sin materia</span>
+                                            @endif
                                         </td>
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             @php
@@ -92,7 +159,9 @@
                                             </div>
                                         </td>
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
-                                            {{ $quiz->questions_count }}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                                {{ $quiz->questions_count }}
+                                            </span>
                                         </td>
                                         <td class="px-6 py-4 text-sm leading-5 text-gray-900 whitespace-no-wrap">
                                             <input 
@@ -130,9 +199,12 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="8"
-                                            class="px-6 py-4 text-center leading-5 text-gray-900 whitespace-no-wrap">
-                                            No se encontraron exámenes.
+                                        <td colspan="9" class="px-6 py-4 text-center leading-5 text-gray-900 whitespace-no-wrap">
+                                            @if($search || $subject_id)
+                                                No se encontraron quizzes que coincidan con los filtros.
+                                            @else
+                                                No se encontraron quizzes.
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforelse
