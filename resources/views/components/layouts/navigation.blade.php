@@ -230,8 +230,9 @@
                 </div>
             </div>
         @else
-            <x-nav-link :href="route('login')">Log In</x-nav-link>
-            <x-nav-link :href="route('register')">Register</x-nav-link>
+
+            <x-nav-link :href="route('login')">Inciar sesión</x-nav-link>
+            <x-nav-link :href="route('register')">Registrarse</x-nav-link>
         @endauth
     </div>
 </nav>
