@@ -39,7 +39,7 @@
                         </div>
                         <div class="ml-3 flex-1">
                             <h3 class="text-lg font-semibold text-red-800 mb-2">
-                                ⚠️ Antes de presentar un Quiz: Asegúrate de tener una conexión estable antes de comenzar. Iniciado el Quiz no puede actualizar la página
+                                ⚠️ Antes de presentar un Quiz: Asegúrate de tener una conexión estable. Iniciado el Quiz no puede actualizar la página
 
                             </h3>
                            
