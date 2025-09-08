@@ -14,20 +14,16 @@ class HomeController extends Controller
 
         $authors = \App\Models\User::whereHas('quizzes')->paginate(10);
         
-        // Obtener materias que tienen quizzes
+        // Obtener materias que tienen quizzes PUBLICADOS
         $subjects = Subject::whereHas('quizzes', function($query) {
             $query->whereHas('questions')
-                  ->when(auth()->guest() || !auth()->user()->is_admin, function ($q) {
-                      return $q->where('published', 1);
-                  });
+                  ->where('published', 1); // Solo quizzes publicados
         })->active()->orderBy('name')->get();
 
         $query = Quiz::whereHas('questions')
             ->with(['user', 'subject']) // Cargar relaciones
             ->withCount('questions')
-            ->when(auth()->guest() || !auth()->user()->is_admin, function ($query) {
-                return $query->where('published', 1);
-            })
+            ->where('published', 1) // SIEMPRE filtrar solo quizzes publicados en home
             ->when($author_id, function ($query) use ($author_id) {
                 return $query->where('user_id', $author_id);
             })
