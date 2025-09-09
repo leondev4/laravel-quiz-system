@@ -332,4 +332,51 @@
             </div>
         </div>
     </div>
+     {{-- @push('scripts')
+    <script>
+        // Actualizar la hora del servidor cada segundo
+        function updateServerTime() {
+            // Crear una nueva fecha basada en la hora del servidor inicial
+            const now = new Date();
+            
+            // Obtener la hora en la zona horaria de Mexico City (UTC-6)
+            const mexicoTime = new Date(now.toLocaleString("en-US", {timeZone: "America/Mexico_City"}));
+            
+            // Formatear la hora en formato AM/PM
+            const timeString = mexicoTime.toLocaleTimeString('en-US', {
+                hour12: true,
+                hour: 'numeric',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            
+            // Formatear la fecha en formato dd/mm/yyyy
+            const dateString = mexicoTime.toLocaleDateString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            
+            // Actualizar los elementos en la página
+            const timeElement = document.getElementById('server-time');
+            const dateElement = document.getElementById('server-date');
+            
+            if (timeElement) {
+                timeElement.textContent = timeString;
+            }
+            
+            if (dateElement) {
+                dateElement.textContent = dateString;
+            }
+        }
+
+        // Actualizar la hora inmediatamente al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            updateServerTime();
+            
+            // Actualizar la hora cada segundo
+            setInterval(updateServerTime, 1000);
+        });
+    </script>
+    @endpush --}}
 </x-app-layout>

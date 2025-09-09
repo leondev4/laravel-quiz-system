@@ -20,7 +20,6 @@
                                 name="text" required />
                             <x-input-error :messages="$errors->get('text')" class="mt-2" />
                         </div>
-
                         {{-- Campo de código --}}
                         <div class="mt-4">
                             <x-input-label for="code_snippet" value="Código (opcional)" />
@@ -28,9 +27,10 @@
                                 name="code_snippet" rows="4" />
                             <x-input-error :messages="$errors->get('code_snippet')" class="mt-2" />
                         </div>
+                        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
 
                         {{-- Campo de materia OBLIGATORIO --}}
-                        <div class="mt-4">
+                        <div >
                             <x-input-label for="subject_id" value="Materia *" class="font-semibold" />
                             <select wire:model.live="subject_id" id="subject_id" 
                                     class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
@@ -45,12 +45,11 @@
                                 <span class="text-red-500">*</span> La materia es obligatoria para organizar las preguntas por tema
                             </p>
                         </div>
-
                         {{-- Campo de duración --}}
-                        <div class="mt-4">
+                        <div>
                             <label for="duration" class="block text-sm font-medium text-gray-700 font-semibold">Duración *</label>
                             <select name="duration" id="duration" wire:model="duration"
-                                class="p-3 w-1/2 text-sm leading-5 rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
+                                class="block mt-1 w-full p-3 text-sm leading-5 rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" required>
                                 <option value="0" disabled>Seleccione una duración</option>
                                 <option value="30">30 segundos</option>
                                 <option value="60">1 minuto</option>
@@ -68,6 +67,7 @@
                                 <span class="text-red-500">*</span> Tiempo límite para responder la pregunta
                             </p>
                         </div>
+                    </div>
 
                         {{-- Opciones de respuesta --}}
                         <div class="mt-4">
@@ -85,12 +85,13 @@
                                         placeholder="Escriba la opción de respuesta..." />
 
                                     <div class="flex items-center ml-4">
+                                        <label>
                                         <input type="checkbox" class="mr-2 ml-2 text-green-600 focus:ring-green-500"
                                             wire:model="options.{{ $index }}.correct"> 
                                         <span class="text-sm font-medium {{ $option['correct'] ? 'text-green-700' : 'text-gray-600' }}">
                                             Correcta
                                         </span>
-                                        
+                                    </label>
                                         {{-- Mostrar botón eliminar solo si hay más de 2 opciones --}}
                                         @if(count($options) > 2)
                                             <button wire:click="removeOption({{ $index }})" type="button"
@@ -149,7 +150,7 @@
                         </div>
 
                         {{-- Resumen de campos requeridos --}}
-                        <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        {{-- <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                             <h4 class="text-sm font-medium text-yellow-800 mb-2">Campos obligatorios:</h4>
                             <ul class="text-xs text-yellow-700 space-y-1">
                                 <li>• Texto de la pregunta</li>
@@ -158,7 +159,7 @@
                                 <li>• Al menos 2 opciones de respuesta</li>
                                 <li>• Al menos una opción marcada como correcta</li>
                             </ul>
-                        </div>
+                        </div> --}}
 
                         <div class="flex items-center justify-end mt-6 space-x-4">
                             <a href="{{ route('questions') }}" 
