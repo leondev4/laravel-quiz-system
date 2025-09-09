@@ -17,10 +17,10 @@
         <div class="text-right">
             <div class="text-sm text-gray-600">Hora del servidor</div>
             <div class="font-medium text-gray-900 text-lg" id="server-time">
-                {{ now()->setTimezone('America/Mexico_City')->format('H:i:s') }}
+                {{ now()->setTimezone('America/Mexico_City')->format('g:i:s A') }}
             </div>
             <div class="text-xs text-gray-500">
-                {{ now()->setTimezone('America/Mexico_City')->format('D, d \d\e M Y') }}
+                {{ now()->setTimezone('America/Mexico_City')->format('d-m-Y') }}
             </div>
         </div>
     </div>
