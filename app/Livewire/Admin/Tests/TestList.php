@@ -87,6 +87,49 @@ class TestList extends Component
         $this->resetPage();
     }
 
+    public function exportCsv()
+    {
+        $filename = 'test-results-' . now()->format('Ymd_His') . '.csv';
+
+        // Repite aquí la consulta que usas en render() para obtener los tests filtrados
+        $tests = \App\Models\Test::with(['user', 'quiz.subject'])
+            // Aplica aquí los mismos filtros que en tu render()
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"$filename\"",
+        ];
+
+        $callback = function() use ($tests) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, [
+                'ID', 'Usuario', 'Email', 'Grade', 'Group', 'Major', 'Quiz', 'Materia', 'Resultado', 'IP', 'Tiempo', 'Fecha'
+            ]);
+            foreach ($tests as $test) {
+                $resultado = $test->result ;
+                fputcsv($handle, [
+                    $test->id,
+                    $test->user->name ?? 'Invitado',
+                    $test->user->email ?? '',
+                    $test->user->grade ?? '',
+                    $test->user->group ?? '',
+                    $test->user->major ?? '',
+                    $test->quiz?->title ?? '',
+                    $test->quiz?->subject?->name ?? '',
+                    $resultado,
+                    $test->ip_address,
+                    $test->time_spent,
+                    $test->created_at,
+                ]);
+            }
+            fclose($handle);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
     public function render()
     {
         $user = auth()->user();

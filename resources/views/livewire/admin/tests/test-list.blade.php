@@ -275,6 +275,11 @@
                             {{ session('message') }}
                         </div>
                     @endif
+
+                    {{-- Botón de exportación a CSV --}}
+                    <button wire:click="exportCsv" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 mb-4">
+                        Exportar a CSV
+                    </button>
                 </div>
             </div>
         </div>
