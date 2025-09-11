@@ -315,6 +315,35 @@
                         @enderror
                     </div>
 
+                    {{-- Campos académicos solo para usuarios no admin (el backend debe ignorar si es admin) --}}
+                    <div class="mb-4">
+                        <label for="grade" class="block text-sm font-medium text-gray-700">Grade</label>
+                        <select id="grade" wire:model="grade" class="w-full rounded-md border-gray-300">
+                            <option value="">Select grade</option>
+                            @for($i=1; $i<=6; $i++)
+                                <option value="{{ $i }}">{{ $i }}</option>
+                            @endfor
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="group" class="block text-sm font-medium text-gray-700">Group</label>
+                        <select id="group" wire:model="group" class="w-full rounded-md border-gray-300">
+                            <option value="">Select group</option>
+                            @foreach(['A','B','C','D'] as $g)
+                                <option value="{{ $g }}">{{ $g }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="major" class="block text-sm font-medium text-gray-700">Major</label>
+                        <select id="major" wire:model="major" class="w-full rounded-md border-gray-300">
+                            <option value="">Select major</option>
+                            @foreach(['IE','ISC','IIA','II','ISA','IIAS','IGE'] as $m)
+                                <option value="{{ $m }}">{{ $m }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
                     <div class="flex justify-end space-x-3">
                         <button wire:click="closeCreateModal" 
                                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 transition-colors">
@@ -396,6 +425,37 @@
                             @error('confirmPassword') 
                                 <span class="text-red-500 text-xs mt-1">{{ $message }}</span> 
                             @enderror
+                        </div>
+                    @endif
+
+                    {{-- En el formulario de usuario (editar) --}}
+                    @if(isset($user) && !$user->is_admin)
+                        <div class="mb-4">
+                            <label for="grade" class="block text-sm font-medium text-gray-700">Grade</label>
+                            <select id="grade" wire:model="grade" class="w-full rounded-md border-gray-300">
+                                <option value="">Select grade</option>
+                                @for($i=1; $i<=6; $i++)
+                                    <option value="{{ $i }}">{{ $i }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="group" class="block text-sm font-medium text-gray-700">Group</label>
+                            <select id="group" wire:model="group" class="w-full rounded-md border-gray-300">
+                                <option value="">Select group</option>
+                                @foreach(['A','B','C','D'] as $g)
+                                    <option value="{{ $g }}">{{ $g }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label for="major" class="block text-sm font-medium text-gray-700">Major</label>
+                            <select id="major" wire:model="major" class="w-full rounded-md border-gray-300">
+                                <option value="">Select major</option>
+                                @foreach(['IE','ISC','IIA','II','ISA','IIAS','IGE'] as $m)
+                                    <option value="{{ $m }}">{{ $m }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     @endif
 

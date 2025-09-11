@@ -16,19 +16,23 @@ class UserList extends Component
     public $search = '';
     public $sortField = 'created_at';
     public $sortDirection = 'desc';
-    
+
     // Modal states
     public $showCreateModal = false;
     public $showEditModal = false;
     public $showResetModal = false;
-    
+
     // Form properties
     public $selectedUserId = null;
     public $name = '';
     public $email = '';
     public $newPassword = '';
     public $confirmPassword = '';
-    
+    // Campos académicos
+    public $grade = null;
+    public $group = null;
+    public $major = null;
+
     protected $rules = [
         'name' => 'required|string|max:255',
         'email' => 'required|email|max:255',
@@ -91,7 +95,7 @@ class UserList extends Component
     public function viewUser($userId)
     {
         $user = User::findOrFail($userId);
-        
+
         if ($user->is_admin) {
             session()->flash('error', 'No se puede ver información de un administrador.');
             return;
@@ -108,7 +112,7 @@ class UserList extends Component
     public function openEditModal($userId)
     {
         $user = User::findOrFail($userId);
-        
+
         if ($user->is_admin) {
             session()->flash('error', 'No se puede editar un administrador.');
             return;
@@ -119,6 +123,9 @@ class UserList extends Component
         $this->email = $user->email;
         $this->newPassword = '';
         $this->confirmPassword = '';
+        $this->grade = $user->grade;
+        $this->group = $user->group;
+        $this->major = $user->major;
         $this->showEditModal = true;
         $this->resetErrorBag();
     }
@@ -133,7 +140,7 @@ class UserList extends Component
     public function updateUser()
     {
         $user = User::findOrFail($this->selectedUserId);
-        
+
         if ($user->is_admin) {
             session()->flash('error', 'No se puede editar un administrador.');
             $this->closeEditModal();
@@ -155,6 +162,9 @@ class UserList extends Component
         $updateData = [
             'name' => $this->name,
             'email' => $this->email,
+            'grade' => $this->grade,
+            'group' => $this->group,
+            'major' => $this->major
         ];
 
         if ($this->newPassword) {
@@ -171,7 +181,7 @@ class UserList extends Component
     public function deleteUser($userId)
     {
         $user = User::findOrFail($userId);
-        
+
         // Verificar que no sea administrador
         if ($user->is_admin) {
             session()->flash('error', 'No se puede eliminar un usuario administrador.');
@@ -195,7 +205,7 @@ class UserList extends Component
     public function openResetModal($userId)
     {
         $user = User::findOrFail($userId);
-        
+
         if ($user->is_admin) {
             session()->flash('error', 'No se puede resetear la contraseña de un administrador.');
             return;
@@ -225,7 +235,7 @@ class UserList extends Component
         ]);
 
         $user = User::findOrFail($this->selectedUserId);
-        
+
         if ($user->is_admin) {
             session()->flash('error', 'No se puede resetear la contraseña de un administrador.');
             $this->closeResetModal();
@@ -243,7 +253,7 @@ class UserList extends Component
     public function sendPasswordResetLink($userId)
     {
         $user = User::findOrFail($userId);
-        
+
         if ($user->is_admin) {
             session()->flash('error', 'No se puede enviar enlace de reseteo a un administrador.');
             return;
@@ -262,7 +272,7 @@ class UserList extends Component
     public function resetPasswordToEmail($userId)
     {
         $user = User::findOrFail($userId);
-        
+
         if ($user->is_admin) {
             session()->flash('error', 'No se puede resetear la contraseña de un administrador.');
             return;
@@ -270,7 +280,7 @@ class UserList extends Component
 
         // Generar nueva contraseña usando el email del usuario
         $newPassword = $user->email;
-        
+
         $user->update([
             'password' => Hash::make($newPassword),
         ]);
@@ -285,6 +295,9 @@ class UserList extends Component
         $this->email = '';
         $this->newPassword = '';
         $this->confirmPassword = '';
+        $this->grade = null;
+        $this->group = null;
+        $this->major = null;
     }
 
     public function render(): View
@@ -294,7 +307,7 @@ class UserList extends Component
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
                     $q->where('name', 'like', '%' . $this->search . '%')
-                      ->orWhere('email', 'like', '%' . $this->search . '%');
+                        ->orWhere('email', 'like', '%' . $this->search . '%');
                 });
             })
             ->orderBy($this->sortField, $this->sortDirection)

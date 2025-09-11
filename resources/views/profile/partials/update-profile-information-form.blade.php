@@ -47,6 +47,39 @@
             @endif
         </div>
 
+        <div>
+            <x-input-label for="grade" value="Grade" />
+            <select id="grade" name="grade" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" autocomplete="off">
+                <option value="">Select grade</option>
+                @for($i=1; $i<=6; $i++)
+                    <option value="{{ $i }}" @if(old('grade', $user->grade)==$i) selected @endif>{{ $i }}</option>
+                @endfor
+            </select>
+            <x-input-error class="mt-2" :messages="$errors->get('grade')" />
+        </div>
+
+        <div>
+            <x-input-label for="group" value="Group" />
+            <select id="group" name="group" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" autocomplete="off">
+                <option value="">Select group</option>
+                @foreach(['A','B','C','D'] as $g)
+                    <option value="{{ $g }}" @if(old('group', $user->group)==$g) selected @endif>{{ $g }}</option>
+                @endforeach
+            </select>
+            <x-input-error class="mt-2" :messages="$errors->get('group')" />
+        </div>
+
+        <div>
+            <x-input-label for="major" value="Major" />
+            <select id="major" name="major" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" autocomplete="off">
+                <option value="">Select major</option>
+                @foreach(['IE','ISC','IIA','II','ISA','IIAS','IGE'] as $m)
+                    <option value="{{ $m }}" @if(old('major', $user->major)==$m) selected @endif>{{ $m }}</option>
+                @endforeach
+            </select>
+            <x-input-error class="mt-2" :messages="$errors->get('major')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 

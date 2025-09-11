@@ -134,6 +134,9 @@
                                         Usuario
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Grado/grupo
+                                    </th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         Quiz
                                     </th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -176,6 +179,10 @@
                                                 </div>
                                             </div>
                                         </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            {{ $test->user->grade ?? '-' }}-{{ $test->user->group ?? '-' }}-{{ $test->user->major ?? '-' }}
+                                        </td>
+                                       
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                             <div class="font-medium">{{ $test->quiz?->title }}</div>
                                             <div class="text-xs text-gray-500">
