@@ -66,4 +66,11 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+Route::get('/debug-ip', function () {
+    return [
+        'request()->ip()' => request()->ip(),
+        'X-Forwarded-For' => request()->header('X-Forwarded-For'),
+        'REMOTE_ADDR' => $_SERVER['REMOTE_ADDR'] ?? null,
+    ];
+});
 require __DIR__ . '/auth.php';
