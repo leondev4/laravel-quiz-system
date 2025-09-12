@@ -62,7 +62,7 @@ class TestList extends Component
 
         // Obtener los quizzes creados por el usuario actual
         $quizIds = Quiz::where('user_id', $user?->id)->pluck('id');
-        
+
         // Solo eliminar tests de quizzes del usuario actual
         $query = Test::where('created_at', '<', $cutoffDate)
             ->whereIn('quiz_id', $quizIds);
@@ -94,6 +94,7 @@ class TestList extends Component
         // Repite aquí la consulta que usas en render() para obtener los tests filtrados
         $tests = \App\Models\Test::with(['user', 'quiz.subject'])
             // Aplica aquí los mismos filtros que en tu render()
+            ->withCount('questions')
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -102,13 +103,24 @@ class TestList extends Component
             'Content-Disposition' => "attachment; filename=\"$filename\"",
         ];
 
-        $callback = function() use ($tests) {
+        $callback = function () use ($tests) {
             $handle = fopen('php://output', 'w');
             fputcsv($handle, [
-                'ID', 'Usuario', 'Email', 'Grade', 'Group', 'Major', 'Quiz', 'Materia', 'Resultado', 'IP', 'Tiempo', 'Fecha'
+                'ID',
+                'Usuario',
+                'Email',
+                'Grade',
+                'Group',
+                'Major',
+                'Quiz',
+                'Materia',
+                'Resultado',
+                'IP',
+                'Tiempo',
+                'Fecha'
             ]);
             foreach ($tests as $test) {
-                $resultado = $test->result ;
+                $resultado = $test->result . '/' . ($test->questions_count ?? 0);
                 fputcsv($handle, [
                     $test->id,
                     $test->user->name ?? 'Invitado',
@@ -133,7 +145,7 @@ class TestList extends Component
     public function render()
     {
         $user = auth()->user();
-        
+
         // Obtener los quizzes creados por el usuario actual
         $quizIds = Quiz::where('user_id', $user?->id)->pluck('id');
 
@@ -156,17 +168,17 @@ class TestList extends Component
         }
 
         $tests = $query->paginate(15);
-        
+
         // Obtener quizzes del usuario para el filtro - FILTRAR POR MATERIA SI ESTÁ SELECCIONADA
         $quizzesQuery = Quiz::whereIn('id', $quizIds);
-        
+
         // Si hay una materia seleccionada, filtrar los quizzes por esa materia
         if ($this->subject_id) {
             $quizzesQuery->where('subject_id', $this->subject_id);
         }
-        
+
         $quizzes = $quizzesQuery->orderBy('title')->get();
-        
+
         // Obtener materias que tienen quizzes del usuario actual
         $subjects = Subject::active()
             ->whereHas('quizzes', function ($query) use ($quizIds) {
