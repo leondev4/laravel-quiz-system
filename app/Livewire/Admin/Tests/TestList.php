@@ -91,12 +91,27 @@ class TestList extends Component
     {
         $filename = 'test-results-' . now()->format('Ymd_His') . '.csv';
 
-        // Repite aquí la consulta que usas en render() para obtener los tests filtrados
-        $tests = \App\Models\Test::with(['user', 'quiz.subject'])
-            // Aplica aquí los mismos filtros que en tu render()
+        $user = auth()->user();
+        $quizIds = \App\Models\Quiz::where('user_id', $user?->id)->pluck('id');
+
+        $query = \App\Models\Test::with(['user', 'quiz', 'quiz.subject'])
+            ->whereIn('quiz_id', $quizIds)
             ->withCount('questions')
-            ->orderBy('created_at', 'desc')
-            ->get();
+            ->latest();
+
+        // Aplica filtro por quiz específico
+        if ($this->quiz_id > 0) {
+            $query->where('quiz_id', $this->quiz_id);
+        }
+
+        // Aplica filtro por materia
+        if ($this->subject_id) {
+            $query->whereHas('quiz', function ($q) {
+                $q->where('subject_id', $this->subject_id);
+            });
+        }
+
+        $tests = $query->get();
 
         $headers = [
             'Content-Type' => 'text/csv',
