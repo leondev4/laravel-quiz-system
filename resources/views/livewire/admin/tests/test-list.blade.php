@@ -87,7 +87,18 @@
                                     </p>
                                 @endif
                             </div>
+                            <div>
+                                 <label for="fecha" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Filtrar por fecha
+                                    @if($subject_id)
+                                        <span class="text-xs text-gray-500">(de la materia seleccionada)</span>
+                                    @endif
+                                </label>
+                        {{-- Date filter: colocar justo después del quiz --}}
+                        <input type="date" wire:model.lazy="date" class="w-5/6 p-2 text-sm border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 bg-white" id="fecha"/>
 
+                        <button wire:click="clearFilters" class="px-3 py-1 bg-gray-200 rounded">Clear</button>
+                            </div>
                             {{-- Información de filtros activos --}}
                             <div class="flex items-center">
                                 @if($quiz_id > 0 || $subject_id)
@@ -277,9 +288,11 @@
                     @endif
 
                     {{-- Botón de exportación a CSV --}}
-                    <button wire:click="exportCsv" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 mb-4">
-                        Exportar a CSV
-                    </button>
+                    <div class="flex items-center space-x-2">
+                       
+
+                        <button wire:click="exportCsv" class="px-3 py-1 bg-green-600 text-white rounded">Export CSV</button>
+                    </div>
                 </div>
             </div>
         </div>

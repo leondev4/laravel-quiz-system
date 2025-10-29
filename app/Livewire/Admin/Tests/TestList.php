@@ -15,6 +15,7 @@ class TestList extends Component
 
     public $quiz_id = 0;
     public $subject_id = '';
+    public $date = ''; // YYYY-MM-DD (filtro por día)
 
     public function mount()
     {
@@ -32,11 +33,28 @@ class TestList extends Component
         $this->quiz_id = 0;
         $this->resetPage();
     }
+    
+    public function updatedDate($value)
+    {
+        // Asegura formato YYYY-MM-DD si el navegador devuelve otro formato
+        if ($value) {
+            try {
+                $this->date = \Carbon\Carbon::parse($value)->toDateString();
+            } catch (\Exception $e) {
+                $this->date = '';
+            }
+        } else {
+            $this->date = '';
+        }
 
+        $this->resetPage();
+    }
+    
     public function clearFilters()
     {
         $this->quiz_id = 0;
         $this->subject_id = '';
+        $this->date = '';
         $this->resetPage();
     }
 
@@ -111,6 +129,12 @@ class TestList extends Component
             });
         }
 
+        // Aplica filtro por fecha (día)
+        if ($this->date) {
+            // espera formato YYYY-MM-DD desde un input type="date"
+            $query->whereDate('created_at', $this->date);
+        }
+
         $tests = $query->get();
 
         $headers = [
@@ -159,6 +183,9 @@ class TestList extends Component
 
     public function render()
     {
+        // eliminar o comentar el debug
+        // \Log::debug('TestList date filter', ['date' => $this->date]);
+
         $user = auth()->user();
 
         // Obtener los quizzes creados por el usuario actual
@@ -180,6 +207,11 @@ class TestList extends Component
             $query->whereHas('quiz', function ($q) {
                 $q->where('subject_id', $this->subject_id);
             });
+        }
+
+        // Aplicar filtro por fecha (día)
+        if ($this->date) {
+            $query->whereDate('created_at', $this->date);
         }
 
         $tests = $query->paginate(15);
